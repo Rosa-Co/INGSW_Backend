@@ -34,7 +34,7 @@ public class IssueController {
         UtenteDTO userDto = new UtenteDTO(
                 issue.getCreataDa().getId(),
                 issue.getCreataDa().getEmail(),
-                issue.getCreataDa().getIsAdmin());
+                issue.getCreataDa().getRole().name());
         return new IssueDTO(
                 issue.getId(),
                 issue.getTipologia(),

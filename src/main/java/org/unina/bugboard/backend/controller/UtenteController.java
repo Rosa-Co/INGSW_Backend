@@ -35,7 +35,7 @@ public class UtenteController {
 
     // Build-in simple mapper for now
     private UtenteDTO mapToDTO(Utente utente) {
-        return new UtenteDTO(utente.getId(), utente.getEmail(), utente.getIsAdmin());
+        return new UtenteDTO(utente.getId(), utente.getEmail(), utente.getRole().name());
     }
 
     @GetMapping

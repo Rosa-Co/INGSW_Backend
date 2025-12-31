@@ -16,17 +16,18 @@ public class Utente {
     @Column(nullable = false)
     private String password;
 
-    @Column(name = "isadmin")
-    private Boolean isAdmin = false;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role = Role.USER;
 
     public Utente() {
     }
 
-    public Utente(Integer id, String email, String password, Boolean isAdmin) {
+    public Utente(Integer id, String email, String password, Role role) {
         this.id = id;
         this.email = email;
         this.password = password;
-        this.isAdmin = isAdmin;
+        this.role = role;
     }
 
     public Integer getId() {
@@ -53,11 +54,11 @@ public class Utente {
         this.password = password;
     }
 
-    public Boolean getIsAdmin() {
-        return isAdmin;
+    public Role getRole() {
+        return role;
     }
 
-    public void setIsAdmin(Boolean isAdmin) {
-        this.isAdmin = isAdmin;
+    public void setRole(Role role) {
+        this.role = role;
     }
 }

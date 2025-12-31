@@ -39,7 +39,7 @@ public class CommentoController {
         UtenteDTO userDto = new UtenteDTO(
                 commento.getScrittoDa().getId(),
                 commento.getScrittoDa().getEmail(),
-                commento.getScrittoDa().getIsAdmin());
+                commento.getScrittoDa().getRole().name());
         return new CommentoDTO(
                 commento.getId(),
                 commento.getDescrizione(),
