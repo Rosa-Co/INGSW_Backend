@@ -1,5 +1,6 @@
 package org.unina.bugboard.backend.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -61,7 +62,7 @@ public class IssueController {
     }
 
     @PostMapping
-    public ResponseEntity<IssueDTO> createIssue(@RequestBody IssueRequest issueRequest) {
+    public ResponseEntity<IssueDTO> createIssue(@Valid @RequestBody IssueRequest issueRequest) {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
         Utente currentUser = utenteService.getUserByEmail(userDetails.getEmail())
@@ -81,7 +82,8 @@ public class IssueController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<IssueDTO> updateIssue(@PathVariable Integer id, @RequestBody IssueRequest issueDetails) {
+    public ResponseEntity<IssueDTO> updateIssue(@PathVariable Integer id,
+            @Valid @RequestBody IssueRequest issueDetails) {
         // Ideally we should check strict permissions here (e.g. only author or admin
         // can update)
         // But for now we just implement the mapping.

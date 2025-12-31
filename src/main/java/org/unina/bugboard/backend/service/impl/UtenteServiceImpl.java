@@ -46,7 +46,7 @@ public class UtenteServiceImpl implements UtenteService {
             // Password update logic should be handled carefully (hashing), simple set for
             // now
             utente.setPassword(utenteDetails.getPassword());
-            utente.setIsAdmin(utenteDetails.getIsAdmin());
+            utente.setRole(utenteDetails.getRole());
             return utenteRepository.save(utente);
         }).orElseThrow(() -> new RuntimeException("User not found with id " + id));
     }

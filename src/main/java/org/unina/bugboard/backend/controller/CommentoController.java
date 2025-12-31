@@ -1,5 +1,6 @@
 package org.unina.bugboard.backend.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -63,7 +64,7 @@ public class CommentoController {
     }
 
     @PostMapping
-    public ResponseEntity<CommentoDTO> createComment(@RequestBody CommentoRequest commentoRequest) {
+    public ResponseEntity<CommentoDTO> createComment(@Valid @RequestBody CommentoRequest commentoRequest) {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
         Utente currentUser = utenteService.getUserByEmail(userDetails.getEmail())
