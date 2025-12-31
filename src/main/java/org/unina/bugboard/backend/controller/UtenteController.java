@@ -13,8 +13,8 @@ import org.unina.bugboard.backend.dto.LoginRequest;
 import org.unina.bugboard.backend.dto.LoginResponse;
 import org.unina.bugboard.backend.model.Utente;
 import org.unina.bugboard.backend.security.JwtUtils;
+import org.unina.bugboard.backend.security.UserDetailsImpl;
 import org.unina.bugboard.backend.service.UtenteService;
-import org.unina.bugboard.backend.service.impl.UserDetailsImpl;
 
 import java.util.List;
 import java.util.stream.Collectors;

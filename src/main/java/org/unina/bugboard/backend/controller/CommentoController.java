@@ -10,10 +10,10 @@ import org.unina.bugboard.backend.dto.UtenteDTO;
 import org.unina.bugboard.backend.model.Commento;
 import org.unina.bugboard.backend.model.Issue;
 import org.unina.bugboard.backend.model.Utente;
+import org.unina.bugboard.backend.security.UserDetailsImpl;
 import org.unina.bugboard.backend.service.CommentoService;
 import org.unina.bugboard.backend.service.IssueService;
 import org.unina.bugboard.backend.service.UtenteService;
-import org.unina.bugboard.backend.service.impl.UserDetailsImpl;
 
 import java.time.LocalDateTime;
 import java.util.List;

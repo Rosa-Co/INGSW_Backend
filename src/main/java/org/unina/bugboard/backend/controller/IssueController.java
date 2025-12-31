@@ -9,9 +9,9 @@ import org.unina.bugboard.backend.dto.IssueRequest;
 import org.unina.bugboard.backend.dto.UtenteDTO;
 import org.unina.bugboard.backend.model.Issue;
 import org.unina.bugboard.backend.model.Utente;
+import org.unina.bugboard.backend.security.UserDetailsImpl;
 import org.unina.bugboard.backend.service.IssueService;
 import org.unina.bugboard.backend.service.UtenteService;
-import org.unina.bugboard.backend.service.impl.UserDetailsImpl;
 
 import java.util.List;
 import java.util.stream.Collectors;
