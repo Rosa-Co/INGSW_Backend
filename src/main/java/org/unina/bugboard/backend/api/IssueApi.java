@@ -1,0 +1,28 @@
+package org.unina.bugboard.backend.api;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.unina.bugboard.backend.dto.IssueDTO;
+import org.unina.bugboard.backend.dto.IssueRequest;
+
+import jakarta.validation.Valid;
+import java.util.List;
+
+@RequestMapping("/api/issues")
+public interface IssueApi {
+
+    @GetMapping
+    List<IssueDTO> getAllIssues();
+
+    @GetMapping("/{id}")
+    ResponseEntity<IssueDTO> getIssueById(@PathVariable Integer id);
+
+    @PostMapping
+    ResponseEntity<IssueDTO> createIssue(@Valid @RequestBody IssueRequest issueRequest);
+
+    @PutMapping("/{id}")
+    ResponseEntity<IssueDTO> updateIssue(@PathVariable Integer id, @Valid @RequestBody IssueRequest issueDetails);
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<Void> deleteIssue(@PathVariable Integer id);
+}

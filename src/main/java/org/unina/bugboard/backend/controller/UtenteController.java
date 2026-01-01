@@ -9,9 +9,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.unina.bugboard.backend.dto.UtenteDTO;
+import org.unina.bugboard.backend.api.UtenteApi;
 import org.unina.bugboard.backend.dto.LoginRequest;
 import org.unina.bugboard.backend.dto.LoginResponse;
+import org.unina.bugboard.backend.dto.UtenteDTO;
 import org.unina.bugboard.backend.mapper.UtenteMapper;
 import org.unina.bugboard.backend.model.Utente;
 import org.unina.bugboard.backend.security.JwtUtils;
@@ -22,9 +23,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/users")
 @CrossOrigin(origins = "*")
-public class UtenteController {
+public class UtenteController implements UtenteApi {
 
     private final UtenteService utenteService;
     private final AuthenticationManager authenticationManager;
@@ -42,14 +42,14 @@ public class UtenteController {
         this.utenteMapper = utenteMapper;
     }
 
-    @GetMapping
+    @Override
     public List<UtenteDTO> getAllUsers() {
         return utenteService.getAllUsers().stream()
                 .map(utenteMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/{id}")
+    @Override
     public ResponseEntity<UtenteDTO> getUserById(@PathVariable Integer id) {
         return utenteService.getUserById(id)
                 .map(utenteMapper::toDTO)
@@ -57,7 +57,7 @@ public class UtenteController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/email/{email}")
+    @Override
     public ResponseEntity<UtenteDTO> getUserByEmail(@PathVariable String email) {
         return utenteService.getUserByEmail(email)
                 .map(utenteMapper::toDTO)
@@ -65,15 +65,14 @@ public class UtenteController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @Override
     public ResponseEntity<UtenteDTO> createUser(@RequestBody Utente utente) {
         // NOTE: Accepting Entity here for Password. Ideally should use UserCreationDTO
         Utente created = utenteService.createUser(utente);
         return ResponseEntity.ok(utenteMapper.toDTO(created));
     }
 
-    @PutMapping("/{id}")
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UtenteDTO> updateUser(@PathVariable Integer id, @RequestBody Utente utenteDetails) {
         try {
@@ -84,14 +83,14 @@ public class UtenteController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @Override
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
         utenteService.deleteUser(id);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/login")
+    @Override
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
@@ -106,6 +105,7 @@ public class UtenteController {
 
         return ResponseEntity.ok(new LoginResponse(jwt,
                 userDetails.getId(),
+                userDetails.getUsername(),
                 userDetails.getEmail(),
                 roles));
     }

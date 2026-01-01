@@ -5,9 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.unina.bugboard.backend.api.CommentoApi;
 import org.unina.bugboard.backend.dto.CommentoDTO;
 import org.unina.bugboard.backend.dto.CommentoRequest;
-import org.unina.bugboard.backend.dto.UtenteDTO;
 import org.unina.bugboard.backend.mapper.CommentoMapper;
 import org.unina.bugboard.backend.model.Commento;
 import org.unina.bugboard.backend.model.Issue;
@@ -22,9 +22,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/comments")
 @CrossOrigin(origins = "*")
-public class CommentoController {
+public class CommentoController implements CommentoApi {
 
     private final CommentoService commentoService;
     private final UtenteService utenteService;
@@ -40,21 +39,21 @@ public class CommentoController {
         this.commentoMapper = commentoMapper;
     }
 
-    @GetMapping
+    @Override
     public List<CommentoDTO> getAllComments() {
         return commentoService.getAllComments().stream()
                 .map(commentoMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/issue/{issueId}")
+    @Override
     public List<CommentoDTO> getCommentsByIssue(@PathVariable Integer issueId) {
         return commentoService.getCommentsByIssueId(issueId).stream()
                 .map(commentoMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
-    @PostMapping
+    @Override
     public ResponseEntity<CommentoDTO> createComment(@Valid @RequestBody CommentoRequest commentoRequest) {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
@@ -74,7 +73,7 @@ public class CommentoController {
         return ResponseEntity.ok(commentoMapper.toDTO(created));
     }
 
-    @DeleteMapping("/{id}")
+    @Override
     public ResponseEntity<Void> deleteComment(@PathVariable Integer id) {
         // Ideally enforce that only author or admin can delete
         commentoService.deleteComment(id);
