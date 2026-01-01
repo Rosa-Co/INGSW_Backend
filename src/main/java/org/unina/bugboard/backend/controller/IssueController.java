@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.unina.bugboard.backend.dto.IssueDTO;
 import org.unina.bugboard.backend.dto.IssueRequest;
 import org.unina.bugboard.backend.dto.UtenteDTO;
+import org.unina.bugboard.backend.mapper.IssueMapper;
 import org.unina.bugboard.backend.model.Issue;
 import org.unina.bugboard.backend.model.Utente;
 import org.unina.bugboard.backend.security.UserDetailsImpl;
@@ -24,40 +25,27 @@ public class IssueController {
 
     private final IssueService issueService;
     private final UtenteService utenteService;
+    private final IssueMapper issueMapper;
 
     @Autowired
-    public IssueController(IssueService issueService, UtenteService utenteService) {
+    public IssueController(IssueService issueService, UtenteService utenteService, IssueMapper issueMapper) {
         this.issueService = issueService;
         this.utenteService = utenteService;
-    }
-
-    private IssueDTO mapToDTO(Issue issue) {
-        UtenteDTO userDto = new UtenteDTO(
-                issue.getCreataDa().getId(),
-                issue.getCreataDa().getEmail(),
-                issue.getCreataDa().getRole().name());
-        return new IssueDTO(
-                issue.getId(),
-                issue.getTipologia(),
-                issue.getTitolo(),
-                issue.getDescrizione(),
-                issue.getImg(),
-                issue.getStato(),
-                issue.getPriorita(),
-                userDto);
+        this.issueMapper = issueMapper;
     }
 
     @GetMapping
     public List<IssueDTO> getAllIssues() {
         return issueService.getAllIssues().stream()
-                .map(this::mapToDTO)
+                .map(issueMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<IssueDTO> getIssueById(@PathVariable Integer id) {
         return issueService.getIssueById(id)
-                .map(i -> ResponseEntity.ok(mapToDTO(i)))
+                .map(issueMapper::toDTO)
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -78,7 +66,7 @@ public class IssueController {
         issue.setCreataDa(currentUser);
 
         Issue created = issueService.createIssue(issue);
-        return ResponseEntity.ok(mapToDTO(created));
+        return ResponseEntity.ok(issueMapper.toDTO(created));
     }
 
     @PutMapping("/{id}")
@@ -126,7 +114,7 @@ public class IssueController {
             // So I will pass an Issue object populated from DTO.
 
             Issue updated = issueService.updateIssue(id, issueUpdates);
-            return ResponseEntity.ok(mapToDTO(updated));
+            return ResponseEntity.ok(issueMapper.toDTO(updated));
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }

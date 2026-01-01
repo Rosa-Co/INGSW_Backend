@@ -1,6 +1,7 @@
 package org.unina.bugboard.backend.model;
 
 import jakarta.persistence.*;
+import org.unina.bugboard.backend.model.enums.Role;
 
 @Entity
 @Table(name = "utente")

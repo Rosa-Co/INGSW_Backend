@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.unina.bugboard.backend.dto.UtenteDTO;
 import org.unina.bugboard.backend.dto.LoginRequest;
 import org.unina.bugboard.backend.dto.LoginResponse;
+import org.unina.bugboard.backend.mapper.UtenteMapper;
 import org.unina.bugboard.backend.model.Utente;
 import org.unina.bugboard.backend.security.JwtUtils;
 import org.unina.bugboard.backend.security.UserDetailsImpl;
@@ -25,31 +26,42 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "*")
 public class UtenteController {
 
-    @Autowired
-    AuthenticationManager authenticationManager;
+    private final UtenteService utenteService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtils jwtUtils;
+    private final UtenteMapper utenteMapper;
 
     @Autowired
-    private UtenteService utenteService;
-
-    @Autowired
-    JwtUtils jwtUtils;
-
-    // Build-in simple mapper for now
-    private UtenteDTO mapToDTO(Utente utente) {
-        return new UtenteDTO(utente.getId(), utente.getEmail(), utente.getRole().name());
+    public UtenteController(UtenteService utenteService,
+            AuthenticationManager authenticationManager,
+            JwtUtils jwtUtils,
+            UtenteMapper utenteMapper) {
+        this.utenteService = utenteService;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtils = jwtUtils;
+        this.utenteMapper = utenteMapper;
     }
 
     @GetMapping
     public List<UtenteDTO> getAllUsers() {
         return utenteService.getAllUsers().stream()
-                .map(this::mapToDTO)
+                .map(utenteMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UtenteDTO> getUserById(@PathVariable Integer id) {
         return utenteService.getUserById(id)
-                .map(u -> ResponseEntity.ok(mapToDTO(u)))
+                .map(utenteMapper::toDTO)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UtenteDTO> getUserByEmail(@PathVariable String email) {
+        return utenteService.getUserByEmail(email)
+                .map(utenteMapper::toDTO)
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
@@ -58,7 +70,7 @@ public class UtenteController {
     public ResponseEntity<UtenteDTO> createUser(@RequestBody Utente utente) {
         // NOTE: Accepting Entity here for Password. Ideally should use UserCreationDTO
         Utente created = utenteService.createUser(utente);
-        return ResponseEntity.ok(mapToDTO(created));
+        return ResponseEntity.ok(utenteMapper.toDTO(created));
     }
 
     @PutMapping("/{id}")
@@ -66,7 +78,7 @@ public class UtenteController {
     public ResponseEntity<UtenteDTO> updateUser(@PathVariable Integer id, @RequestBody Utente utenteDetails) {
         try {
             Utente updated = utenteService.updateUser(id, utenteDetails);
-            return ResponseEntity.ok(mapToDTO(updated));
+            return ResponseEntity.ok(utenteMapper.toDTO(updated));
         } catch (RuntimeException e) {
             return ResponseEntity.notFound().build();
         }

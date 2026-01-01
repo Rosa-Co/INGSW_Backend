@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.unina.bugboard.backend.dto.CommentoDTO;
 import org.unina.bugboard.backend.dto.CommentoRequest;
 import org.unina.bugboard.backend.dto.UtenteDTO;
+import org.unina.bugboard.backend.mapper.CommentoMapper;
 import org.unina.bugboard.backend.model.Commento;
 import org.unina.bugboard.backend.model.Issue;
 import org.unina.bugboard.backend.model.Utente;
@@ -28,38 +29,28 @@ public class CommentoController {
     private final CommentoService commentoService;
     private final UtenteService utenteService;
     private final IssueService issueService;
+    private final CommentoMapper commentoMapper;
 
     @Autowired
-    public CommentoController(CommentoService commentoService, UtenteService utenteService, IssueService issueService) {
+    public CommentoController(CommentoService commentoService, UtenteService utenteService, IssueService issueService,
+            CommentoMapper commentoMapper) {
         this.commentoService = commentoService;
         this.utenteService = utenteService;
         this.issueService = issueService;
-    }
-
-    private CommentoDTO mapToDTO(Commento commento) {
-        UtenteDTO userDto = new UtenteDTO(
-                commento.getScrittoDa().getId(),
-                commento.getScrittoDa().getEmail(),
-                commento.getScrittoDa().getRole().name());
-        return new CommentoDTO(
-                commento.getId(),
-                commento.getDescrizione(),
-                commento.getData(),
-                userDto,
-                commento.getAppartiene().getId());
+        this.commentoMapper = commentoMapper;
     }
 
     @GetMapping
     public List<CommentoDTO> getAllComments() {
         return commentoService.getAllComments().stream()
-                .map(this::mapToDTO)
+                .map(commentoMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/issue/{issueId}")
     public List<CommentoDTO> getCommentsByIssue(@PathVariable Integer issueId) {
         return commentoService.getCommentsByIssueId(issueId).stream()
-                .map(this::mapToDTO)
+                .map(commentoMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
@@ -80,7 +71,7 @@ public class CommentoController {
         commento.setAppartiene(issue);
 
         Commento created = commentoService.createComment(commento);
-        return ResponseEntity.ok(mapToDTO(created));
+        return ResponseEntity.ok(commentoMapper.toDTO(created));
     }
 
     @DeleteMapping("/{id}")
