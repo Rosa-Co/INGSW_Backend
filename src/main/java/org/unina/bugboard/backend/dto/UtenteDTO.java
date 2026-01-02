@@ -1,14 +1,16 @@
 package org.unina.bugboard.backend.dto;
 
+import org.unina.bugboard.backend.model.enums.Role;
+
 public class UtenteDTO {
     private Integer id;
     private String email;
-    private String role;
+    private Role role;
 
     public UtenteDTO() {
     }
 
-    public UtenteDTO(Integer id, String email, String role) {
+    public UtenteDTO(Integer id, String email, Role role) {
         this.id = id;
         this.email = email;
         this.role = role;
@@ -30,11 +32,11 @@ public class UtenteDTO {
         this.email = email;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 }

@@ -1,6 +1,9 @@
 package org.unina.bugboard.backend.model;
 
 import jakarta.persistence.*;
+import org.unina.bugboard.backend.model.enums.IssuePriority;
+import org.unina.bugboard.backend.model.enums.IssueStatus;
+import org.unina.bugboard.backend.model.enums.IssueType;
 
 @Entity
 @Table(name = "issue")
@@ -10,7 +13,8 @@ public class Issue {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String tipologia;
+    @Enumerated(EnumType.STRING)
+    private IssueType tipologia;
 
     @Column(nullable = false)
     private String titolo;
@@ -20,9 +24,11 @@ public class Issue {
 
     private String img;
 
-    private String stato;
+    @Enumerated(EnumType.STRING)
+    private IssueStatus stato;
 
-    private String priorita;
+    @Enumerated(EnumType.STRING)
+    private IssuePriority priorita;
 
     @ManyToOne
     @JoinColumn(name = "creata_da", nullable = false)
@@ -31,8 +37,8 @@ public class Issue {
     public Issue() {
     }
 
-    public Issue(Integer id, String tipologia, String titolo, String descrizione, String img, String stato,
-            String priorita, Utente creataDa) {
+    public Issue(Integer id, IssueType tipologia, String titolo, String descrizione, String img, IssueStatus stato,
+            IssuePriority priorita, Utente creataDa) {
         this.id = id;
         this.tipologia = tipologia;
         this.titolo = titolo;
@@ -51,11 +57,11 @@ public class Issue {
         this.id = id;
     }
 
-    public String getTipologia() {
+    public IssueType getTipologia() {
         return tipologia;
     }
 
-    public void setTipologia(String tipologia) {
+    public void setTipologia(IssueType tipologia) {
         this.tipologia = tipologia;
     }
 
@@ -83,19 +89,19 @@ public class Issue {
         this.img = img;
     }
 
-    public String getStato() {
+    public IssueStatus getStato() {
         return stato;
     }
 
-    public void setStato(String stato) {
+    public void setStato(IssueStatus stato) {
         this.stato = stato;
     }
 
-    public String getPriorita() {
+    public IssuePriority getPriorita() {
         return priorita;
     }
 
-    public void setPriorita(String priorita) {
+    public void setPriorita(IssuePriority priorita) {
         this.priorita = priorita;
     }
 

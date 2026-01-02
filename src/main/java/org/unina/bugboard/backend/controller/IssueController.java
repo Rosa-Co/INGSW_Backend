@@ -11,6 +11,7 @@ import org.unina.bugboard.backend.dto.IssueRequest;
 import org.unina.bugboard.backend.mapper.IssueMapper;
 import org.unina.bugboard.backend.model.Issue;
 import org.unina.bugboard.backend.model.Utente;
+import org.unina.bugboard.backend.model.enums.IssueStatus;
 import org.unina.bugboard.backend.security.UserDetailsImpl;
 import org.unina.bugboard.backend.service.IssueService;
 import org.unina.bugboard.backend.service.UtenteService;
@@ -61,7 +62,7 @@ public class IssueController implements IssueApi {
         issue.setTipologia(issueRequest.getTipologia());
         issue.setImg(issueRequest.getImg());
         issue.setPriorita(issueRequest.getPriorita());
-        issue.setStato("TODO"); // Default status
+        issue.setStato(IssueStatus.TODO);
         issue.setCreataDa(currentUser);
 
         Issue created = issueService.createIssue(issue);

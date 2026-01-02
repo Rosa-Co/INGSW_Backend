@@ -3,6 +3,10 @@ package org.unina.bugboard.backend.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import org.unina.bugboard.backend.model.enums.IssuePriority;
+import org.unina.bugboard.backend.model.enums.IssueStatus;
+import org.unina.bugboard.backend.model.enums.IssueType;
+
 public class IssueRequest {
     @NotBlank(message = "Title cannot be empty")
     @Size(min = 3, max = 100, message = "Title must be between 3 and 100 characters")
@@ -11,19 +15,19 @@ public class IssueRequest {
     @NotBlank(message = "Description cannot be empty")
     private String descrizione;
 
-    private String tipologia;
+    private IssueType tipologia;
     private String img;
-    private String priorita;
-    private String stato; // Optional for update
+    private IssuePriority priorita;
+    private IssueStatus stato; // Optional for update
 
     public IssueRequest() {
     }
 
-    public String getTipologia() {
+    public IssueType getTipologia() {
         return tipologia;
     }
 
-    public void setTipologia(String tipologia) {
+    public void setTipologia(IssueType tipologia) {
         this.tipologia = tipologia;
     }
 
@@ -51,19 +55,19 @@ public class IssueRequest {
         this.img = img;
     }
 
-    public String getPriorita() {
+    public IssuePriority getPriorita() {
         return priorita;
     }
 
-    public void setPriorita(String priorita) {
+    public void setPriorita(IssuePriority priorita) {
         this.priorita = priorita;
     }
 
-    public String getStato() {
+    public IssueStatus getStato() {
         return stato;
     }
 
-    public void setStato(String stato) {
+    public void setStato(IssueStatus stato) {
         this.stato = stato;
     }
 }

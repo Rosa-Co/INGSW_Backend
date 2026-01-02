@@ -59,7 +59,6 @@ public class SecurityConfig {
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll() // Auth endpoints
-                        .requestMatchers("/api/users/login").permitAll()
                         .requestMatchers("/api/users/**").authenticated() // Require auth for user operations
                         .requestMatchers("/api/issues/**").authenticated()
                         .requestMatchers("/api/comments/**").authenticated()

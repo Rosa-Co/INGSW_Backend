@@ -1,8 +1,10 @@
 package org.unina.bugboard.backend.api;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.unina.bugboard.backend.dto.LoginRequest;
+import org.unina.bugboard.backend.dto.UserCreationRequest;
 import org.unina.bugboard.backend.dto.UtenteDTO;
 import org.unina.bugboard.backend.model.Utente;
 
@@ -22,8 +24,7 @@ public interface UtenteApi {
     ResponseEntity<UtenteDTO> getUserByEmail(@PathVariable String email);
 
     @PostMapping
-    ResponseEntity<UtenteDTO> createUser(@RequestBody Utente utente);
-
-    @PostMapping("/login")
-    ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest);
+    @PreAuthorize("hasRole('ADMIN')")
+    ResponseEntity<UtenteDTO> createUser(
+            @RequestBody @Valid org.unina.bugboard.backend.dto.UserCreationRequest userCreationRequest);
 }

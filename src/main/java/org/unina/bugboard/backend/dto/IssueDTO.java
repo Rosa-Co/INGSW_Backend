@@ -1,20 +1,24 @@
 package org.unina.bugboard.backend.dto;
 
+import org.unina.bugboard.backend.model.enums.IssuePriority;
+import org.unina.bugboard.backend.model.enums.IssueStatus;
+import org.unina.bugboard.backend.model.enums.IssueType;
+
 public class IssueDTO {
     private Integer id;
-    private String tipologia;
+    private IssueType tipologia;
     private String titolo;
     private String descrizione;
     private String img;
-    private String stato;
-    private String priorita;
+    private IssueStatus stato;
+    private IssuePriority priorita;
     private UtenteDTO creataDa;
 
     public IssueDTO() {
     }
 
-    public IssueDTO(Integer id, String tipologia, String titolo, String descrizione, String img, String stato,
-            String priorita, UtenteDTO creataDa) {
+    public IssueDTO(Integer id, IssueType tipologia, String titolo, String descrizione, String img, IssueStatus stato,
+            IssuePriority priorita, UtenteDTO creataDa) {
         this.id = id;
         this.tipologia = tipologia;
         this.titolo = titolo;
@@ -34,11 +38,11 @@ public class IssueDTO {
         this.id = id;
     }
 
-    public String getTipologia() {
+    public IssueType getTipologia() {
         return tipologia;
     }
 
-    public void setTipologia(String tipologia) {
+    public void setTipologia(IssueType tipologia) {
         this.tipologia = tipologia;
     }
 
@@ -66,19 +70,19 @@ public class IssueDTO {
         this.img = img;
     }
 
-    public String getStato() {
+    public IssueStatus getStato() {
         return stato;
     }
 
-    public void setStato(String stato) {
+    public void setStato(IssueStatus stato) {
         this.stato = stato;
     }
 
-    public String getPriorita() {
+    public IssuePriority getPriorita() {
         return priorita;
     }
 
-    public void setPriorita(String priorita) {
+    public void setPriorita(IssuePriority priorita) {
         this.priorita = priorita;
     }
 
