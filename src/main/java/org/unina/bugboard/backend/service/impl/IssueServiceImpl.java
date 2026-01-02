@@ -35,24 +35,6 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public Issue updateIssue(Integer id, Issue issueDetails) {
-        return issueRepository.findById(id).map(issue -> {
-            issue.setTitolo(issueDetails.getTitolo());
-            issue.setDescrizione(issueDetails.getDescrizione());
-            issue.setStato(issueDetails.getStato());
-            issue.setPriorita(issueDetails.getPriorita());
-            issue.setImg(issueDetails.getImg());
-
-            return issueRepository.save(issue);
-        }).orElseThrow(() -> new RuntimeException("Issue not found with id " + id));
-    }
-
-    @Override
-    public void deleteIssue(Integer id) {
-        issueRepository.deleteById(id);
-    }
-
-    @Override
     public List<Issue> getIssuesByStatus(String status) {
         return issueRepository.findByStato(status);
     }

@@ -13,5 +13,4 @@ public interface CommentoService {
 
     Commento createComment(Commento commento);
 
-    void deleteComment(Integer id);
 }

@@ -39,20 +39,4 @@ public class UtenteServiceImpl implements UtenteService {
         return utenteRepository.save(utente);
     }
 
-    @Override
-    public Utente updateUser(Integer id, Utente utenteDetails) {
-        return utenteRepository.findById(id).map(utente -> {
-            utente.setEmail(utenteDetails.getEmail());
-            // Password update logic should be handled carefully (hashing), simple set for
-            // now
-            utente.setPassword(utenteDetails.getPassword());
-            utente.setRole(utenteDetails.getRole());
-            return utenteRepository.save(utente);
-        }).orElseThrow(() -> new RuntimeException("User not found with id " + id));
-    }
-
-    @Override
-    public void deleteUser(Integer id) {
-        utenteRepository.deleteById(id);
-    }
 }

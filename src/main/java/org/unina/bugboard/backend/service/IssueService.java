@@ -11,9 +11,5 @@ public interface IssueService {
 
     Issue createIssue(Issue issue);
 
-    Issue updateIssue(Integer id, Issue issueDetails);
-
-    void deleteIssue(Integer id);
-
     List<Issue> getIssuesByStatus(String status);
 }

@@ -39,8 +39,4 @@ public class CommentoServiceImpl implements CommentoService {
         return commentoRepository.save(commento);
     }
 
-    @Override
-    public void deleteComment(Integer id) {
-        commentoRepository.deleteById(id);
-    }
 }

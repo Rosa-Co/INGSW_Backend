@@ -13,7 +13,4 @@ public interface UtenteService {
 
     Utente createUser(Utente utente);
 
-    Utente updateUser(Integer id, Utente utenteDetails);
-
-    void deleteUser(Integer id);
 }
