@@ -105,7 +105,6 @@ public class UtenteController implements UtenteApi {
 
         return ResponseEntity.ok(new LoginResponse(jwt,
                 userDetails.getId(),
-                userDetails.getUsername(),
                 userDetails.getEmail(),
                 roles));
     }
