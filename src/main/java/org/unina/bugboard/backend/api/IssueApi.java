@@ -20,9 +20,4 @@ public interface IssueApi {
     @PostMapping
     ResponseEntity<IssueDTO> createIssue(@Valid @RequestBody IssueRequest issueRequest);
 
-    @PutMapping("/{id}")
-    ResponseEntity<IssueDTO> updateIssue(@PathVariable Integer id, @Valid @RequestBody IssueRequest issueDetails);
-
-    @DeleteMapping("/{id}")
-    ResponseEntity<Void> deleteIssue(@PathVariable Integer id);
 }

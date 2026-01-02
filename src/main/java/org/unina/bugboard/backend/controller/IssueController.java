@@ -61,42 +61,11 @@ public class IssueController implements IssueApi {
         issue.setTipologia(issueRequest.getTipologia());
         issue.setImg(issueRequest.getImg());
         issue.setPriorita(issueRequest.getPriorita());
-        issue.setStato("OPEN"); // Default status
+        issue.setStato("TODO"); // Default status
         issue.setCreataDa(currentUser);
 
         Issue created = issueService.createIssue(issue);
         return ResponseEntity.ok(issueMapper.toDTO(created));
     }
 
-    @Override
-    public ResponseEntity<IssueDTO> updateIssue(@PathVariable Integer id,
-            @Valid @RequestBody IssueRequest issueDetails) {
-        try {
-            Issue issueUpdates = new Issue();
-            // We only map fields that are present in the request.
-            if (issueDetails.getTitolo() != null)
-                issueUpdates.setTitolo(issueDetails.getTitolo());
-            if (issueDetails.getDescrizione() != null)
-                issueUpdates.setDescrizione(issueDetails.getDescrizione());
-            if (issueDetails.getTipologia() != null)
-                issueUpdates.setTipologia(issueDetails.getTipologia());
-            if (issueDetails.getPriorita() != null)
-                issueUpdates.setPriorita(issueDetails.getPriorita());
-            if (issueDetails.getStato() != null)
-                issueUpdates.setStato(issueDetails.getStato());
-            if (issueDetails.getImg() != null)
-                issueUpdates.setImg(issueDetails.getImg());
-
-            Issue updated = issueService.updateIssue(id, issueUpdates);
-            return ResponseEntity.ok(issueMapper.toDTO(updated));
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @Override
-    public ResponseEntity<Void> deleteIssue(@PathVariable Integer id) {
-        issueService.deleteIssue(id);
-        return ResponseEntity.ok().build();
-    }
 }

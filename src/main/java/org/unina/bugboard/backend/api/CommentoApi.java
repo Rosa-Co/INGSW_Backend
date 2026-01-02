@@ -20,6 +20,4 @@ public interface CommentoApi {
     @PostMapping
     ResponseEntity<CommentoDTO> createComment(@Valid @RequestBody CommentoRequest commentoRequest);
 
-    @DeleteMapping("/{id}")
-    ResponseEntity<Void> deleteComment(@PathVariable Integer id);
 }

@@ -73,24 +73,6 @@ public class UtenteController implements UtenteApi {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<UtenteDTO> updateUser(@PathVariable Integer id, @RequestBody Utente utenteDetails) {
-        try {
-            Utente updated = utenteService.updateUser(id, utenteDetails);
-            return ResponseEntity.ok(utenteMapper.toDTO(updated));
-        } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
-    @Override
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
-        utenteService.deleteUser(id);
-        return ResponseEntity.ok().build();
-    }
-
-    @Override
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));

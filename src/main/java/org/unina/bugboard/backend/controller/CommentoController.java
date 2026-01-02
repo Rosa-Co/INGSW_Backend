@@ -73,10 +73,4 @@ public class CommentoController implements CommentoApi {
         return ResponseEntity.ok(commentoMapper.toDTO(created));
     }
 
-    @Override
-    public ResponseEntity<Void> deleteComment(@PathVariable Integer id) {
-        // Ideally enforce that only author or admin can delete
-        commentoService.deleteComment(id);
-        return ResponseEntity.ok().build();
-    }
 }

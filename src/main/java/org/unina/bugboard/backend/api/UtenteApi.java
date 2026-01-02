@@ -24,12 +24,6 @@ public interface UtenteApi {
     @PostMapping
     ResponseEntity<UtenteDTO> createUser(@RequestBody Utente utente);
 
-    @PutMapping("/{id}")
-    ResponseEntity<UtenteDTO> updateUser(@PathVariable Integer id, @RequestBody Utente utenteDetails);
-
-    @DeleteMapping("/{id}")
-    ResponseEntity<Void> deleteUser(@PathVariable Integer id);
-
     @PostMapping("/login")
     ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest);
 }
