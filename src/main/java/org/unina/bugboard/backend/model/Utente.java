@@ -18,7 +18,7 @@ public class Utente {
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "ruolo", nullable = false)
     private Role role = Role.USER;
 
     public Utente() {
