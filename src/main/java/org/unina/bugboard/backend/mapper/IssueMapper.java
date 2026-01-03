@@ -19,14 +19,15 @@ public class IssueMapper {
         if (issue == null) {
             return null;
         }
-        return new IssueDTO(
-                issue.getId(),
-                issue.getTipologia(),
-                issue.getTitolo(),
-                issue.getDescrizione(),
-                issue.getImg(),
-                issue.getStato(),
-                issue.getPriorita(),
-                utenteMapper.toDTO(issue.getCreataDa()));
+        return IssueDTO.builder()
+                .id(issue.getId())
+                .tipologia(issue.getTipologia())
+                .titolo(issue.getTitolo())
+                .descrizione(issue.getDescrizione())
+                .img(issue.getImg())
+                .stato(issue.getStato())
+                .priorita(issue.getPriorita())
+                .creataDa(utenteMapper.toDTO(issue.getCreataDa()))
+                .build();
     }
 }

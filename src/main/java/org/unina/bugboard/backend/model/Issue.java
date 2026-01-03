@@ -37,16 +37,74 @@ public class Issue {
     public Issue() {
     }
 
-    public Issue(Integer id, IssueType tipologia, String titolo, String descrizione, String img, IssueStatus stato,
-            IssuePriority priorita, Utente creataDa) {
-        this.id = id;
-        this.tipologia = tipologia;
-        this.titolo = titolo;
-        this.descrizione = descrizione;
-        this.img = img;
-        this.stato = stato;
-        this.priorita = priorita;
-        this.creataDa = creataDa;
+    private Issue(Builder builder) {
+        this.id = builder.id;
+        this.tipologia = builder.tipologia;
+        this.titolo = builder.titolo;
+        this.descrizione = builder.descrizione;
+        this.img = builder.img;
+        this.stato = builder.stato;
+        this.priorita = builder.priorita;
+        this.creataDa = builder.creataDa;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static class Builder {
+        private Integer id;
+        private IssueType tipologia;
+        private String titolo;
+        private String descrizione;
+        private String img;
+        private IssueStatus stato;
+        private IssuePriority priorita;
+        private Utente creataDa;
+
+        public Builder id(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder tipologia(IssueType tipologia) {
+            this.tipologia = tipologia;
+            return this;
+        }
+
+        public Builder titolo(String titolo) {
+            this.titolo = titolo;
+            return this;
+        }
+
+        public Builder descrizione(String descrizione) {
+            this.descrizione = descrizione;
+            return this;
+        }
+
+        public Builder img(String img) {
+            this.img = img;
+            return this;
+        }
+
+        public Builder stato(IssueStatus stato) {
+            this.stato = stato;
+            return this;
+        }
+
+        public Builder priorita(IssuePriority priorita) {
+            this.priorita = priorita;
+            return this;
+        }
+
+        public Builder creataDa(Utente creataDa) {
+            this.creataDa = creataDa;
+            return this;
+        }
+
+        public Issue build() {
+            return new Issue(this);
+        }
     }
 
     public Integer getId() {

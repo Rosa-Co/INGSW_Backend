@@ -55,14 +55,15 @@ public class IssueController implements IssueApi {
         Utente currentUser = utenteService.getUserByEmail(userDetails.getEmail())
                 .orElseThrow(() -> new RuntimeException("Authenticated user not found"));
 
-        Issue issue = new Issue();
-        issue.setTitolo(issueRequest.getTitolo());
-        issue.setDescrizione(issueRequest.getDescrizione());
-        issue.setTipologia(issueRequest.getTipologia());
-        issue.setImg(issueRequest.getImg());
-        issue.setPriorita(issueRequest.getPriorita());
-        issue.setStato(IssueStatus.TODO);
-        issue.setCreataDa(currentUser);
+        Issue issue = Issue.builder()
+                .titolo(issueRequest.getTitolo())
+                .descrizione(issueRequest.getDescrizione())
+                .tipologia(issueRequest.getTipologia())
+                .img(issueRequest.getImg())
+                .priorita(issueRequest.getPriorita())
+                .stato(IssueStatus.TODO)
+                .creataDa(currentUser)
+                .build();
 
         Issue created = issueService.createIssue(issue);
         return ResponseEntity.ok(issueMapper.toDTO(created));
