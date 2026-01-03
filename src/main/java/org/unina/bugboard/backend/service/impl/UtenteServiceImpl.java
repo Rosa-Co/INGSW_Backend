@@ -1,6 +1,7 @@
 package org.unina.bugboard.backend.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.unina.bugboard.backend.model.Utente;
 import org.unina.bugboard.backend.repository.UtenteRepository;
@@ -14,11 +15,10 @@ public class UtenteServiceImpl implements UtenteService {
 
     private final UtenteRepository utenteRepository;
 
-    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UtenteServiceImpl(UtenteRepository utenteRepository,
-            org.springframework.security.crypto.password.PasswordEncoder passwordEncoder) {
+    public UtenteServiceImpl(UtenteRepository utenteRepository, PasswordEncoder passwordEncoder) {
         this.utenteRepository = utenteRepository;
         this.passwordEncoder = passwordEncoder;
     }

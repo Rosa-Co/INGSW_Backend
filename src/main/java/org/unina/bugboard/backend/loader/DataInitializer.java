@@ -29,7 +29,6 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Check if admin exists
         if (utenteRepository.findByEmail(adminEmail).isEmpty()) {
             Utente admin = new Utente();
             admin.setEmail(adminEmail);
