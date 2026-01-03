@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 import org.unina.bugboard.backend.dto.UserCreationRequest;
 import org.unina.bugboard.backend.dto.UtenteDTO;
 import org.unina.bugboard.backend.model.Utente;
-import org.unina.bugboard.backend.model.enums.Role;
 
 @Component
 public class UtenteMapper {

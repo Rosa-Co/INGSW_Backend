@@ -1,10 +1,10 @@
 package org.unina.bugboard.backend.controller;
 
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RestController;
 import org.unina.bugboard.backend.api.IssueApi;
 import org.unina.bugboard.backend.dto.IssueDTO;
 import org.unina.bugboard.backend.dto.IssueRequest;

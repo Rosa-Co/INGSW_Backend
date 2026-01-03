@@ -1,11 +1,11 @@
 package org.unina.bugboard.backend.api;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.unina.bugboard.backend.dto.CommentoDTO;
 import org.unina.bugboard.backend.dto.CommentoRequest;
 
-import jakarta.validation.Valid;
 import java.util.List;
 
 @RequestMapping("/api/comments")

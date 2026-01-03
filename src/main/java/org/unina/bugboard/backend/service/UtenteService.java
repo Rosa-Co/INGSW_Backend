@@ -1,6 +1,7 @@
 package org.unina.bugboard.backend.service;
 
 import org.unina.bugboard.backend.model.Utente;
+
 import java.util.List;
 import java.util.Optional;
 

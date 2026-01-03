@@ -14,13 +14,13 @@ import java.util.Objects;
 //adapter tra utente e UserDetails di Spring Security
 public class UserDetailsImpl implements UserDetails {
 
-    private Integer id;
-    private String email;
+    private final Integer id;
+    private final String email;
 
     @JsonIgnore
     private String password;
 
-    private Collection<? extends GrantedAuthority> authorities;
+    private final Collection<? extends GrantedAuthority> authorities;
 
     public UserDetailsImpl(Integer id, String email, String password,
             Collection<? extends GrantedAuthority> authorities) {

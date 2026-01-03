@@ -2,7 +2,6 @@ package org.unina.bugboard.backend.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-
 import org.unina.bugboard.backend.model.enums.IssuePriority;
 import org.unina.bugboard.backend.model.enums.IssueStatus;
 import org.unina.bugboard.backend.model.enums.IssueType;

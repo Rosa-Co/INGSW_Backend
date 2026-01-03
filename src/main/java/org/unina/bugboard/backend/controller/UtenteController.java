@@ -1,15 +1,16 @@
 package org.unina.bugboard.backend.controller;
 
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RestController;
 import org.unina.bugboard.backend.api.UtenteApi;
 import org.unina.bugboard.backend.dto.UserCreationRequest;
 import org.unina.bugboard.backend.dto.UtenteDTO;
 import org.unina.bugboard.backend.mapper.UtenteMapper;
 import org.unina.bugboard.backend.model.Utente;
 import org.unina.bugboard.backend.service.UtenteService;
+
 import java.util.List;
 import java.util.stream.Collectors;
 

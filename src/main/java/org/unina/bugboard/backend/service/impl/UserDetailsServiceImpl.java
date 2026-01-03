@@ -12,8 +12,13 @@ import org.unina.bugboard.backend.security.UserDetailsImpl;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
+
+    private final UtenteRepository utenteRepository;
+
     @Autowired
-    UtenteRepository utenteRepository;
+    public UserDetailsServiceImpl(UtenteRepository utenteRepository) {
+        this.utenteRepository = utenteRepository;
+    }
 
     @Override
     @Transactional

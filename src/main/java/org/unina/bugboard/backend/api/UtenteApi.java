@@ -1,14 +1,12 @@
 package org.unina.bugboard.backend.api;
 
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.unina.bugboard.backend.dto.LoginRequest;
 import org.unina.bugboard.backend.dto.UserCreationRequest;
 import org.unina.bugboard.backend.dto.UtenteDTO;
-import org.unina.bugboard.backend.model.Utente;
 
-import jakarta.validation.Valid;
 import java.util.List;
 
 @RequestMapping("/api/users")
