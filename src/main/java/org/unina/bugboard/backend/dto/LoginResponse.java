@@ -7,7 +7,7 @@ public class LoginResponse {
     private String type = "Bearer";
     private Integer id;
     private String email;
-    private List<String> roles;
+    private List<String> roles; //!TODO : Change to Role if needed
 
     public LoginResponse(String accessToken, Integer id, String email, List<String> roles) {
         this.token = accessToken;

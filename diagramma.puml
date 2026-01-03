@@ -1,0 +1,448 @@
+@startuml
+interface org.unina.bugboard.backend.repository.UtenteRepository {
+~ Optional<Utente> findByEmail(String)
+}
+
+class org.unina.bugboard.backend.exception.GlobalExceptionHandler {
++ ResponseEntity<Map<String,String>> handleValidationExceptions(MethodArgumentNotValidException)
++ ResponseEntity<Map<String,String>> handleGlobalException(Exception)
+}
+
+enum org.unina.bugboard.backend.model.enums.IssueType {
++  QUESTION
++  BUG
++  DOCUMENTATION
++  FEATURE
+}
+
+class org.unina.bugboard.backend.model.Utente {
+- Integer id
+- String email
+- String password
+- Role role
++ Integer getId()
++ void setId(Integer)
++ String getEmail()
++ void setEmail(String)
++ String getPassword()
++ void setPassword(String)
++ Role getRole()
++ void setRole(Role)
+}
+
+
+class org.unina.bugboard.backend.model.Issue {
+- Integer id
+- IssueType tipologia
+- String titolo
+- String descrizione
+- String img
+- IssueStatus stato
+- IssuePriority priorita
+- Utente creataDa
++ Integer getId()
++ void setId(Integer)
++ IssueType getTipologia()
++ void setTipologia(IssueType)
++ String getTitolo()
++ void setTitolo(String)
++ String getDescrizione()
++ void setDescrizione(String)
++ String getImg()
++ void setImg(String)
++ IssueStatus getStato()
++ void setStato(IssueStatus)
++ IssuePriority getPriorita()
++ void setPriorita(IssuePriority)
++ Utente getCreataDa()
++ void setCreataDa(Utente)
+}
+
+
+class org.unina.bugboard.backend.mapper.IssueMapper {
+- UtenteMapper utenteMapper
++ IssueDTO toDTO(Issue)
+}
+
+
+class org.unina.bugboard.backend.BugboardBackendApplication {
++ {static} void main(String[])
+}
+
+interface org.unina.bugboard.backend.service.UtenteService {
+~ List<Utente> getAllUsers()
+~ Optional<Utente> getUserById(Integer)
+~ Optional<Utente> getUserByEmail(String)
+~ Utente createUser(Utente)
+}
+
+class org.unina.bugboard.backend.mapper.UtenteMapper {
++ UtenteDTO toDTO(Utente)
++ Utente toEntity(UserCreationRequest)
+}
+
+interface org.unina.bugboard.backend.api.IssueApi {
+~ List<IssueDTO> getAllIssues()
+~ ResponseEntity<IssueDTO> getIssueById(Integer)
+~ ResponseEntity<IssueDTO> createIssue(IssueRequest)
+}
+
+interface org.unina.bugboard.backend.service.CommentoService {
+~ List<Commento> getAllComments()
+~ List<Commento> getCommentsByIssueId(Integer)
+~ Optional<Commento> getCommentById(Integer)
+~ Commento createComment(Commento)
+}
+
+class org.unina.bugboard.backend.security.JwtAuthenticationFilter {
+- JwtUtils jwtUtils
+- UserDetailsServiceImpl userDetailsService
+# void doFilterInternal(HttpServletRequest,HttpServletResponse,FilterChain)
+- String parseJwt(HttpServletRequest)
+}
+
+
+class org.unina.bugboard.backend.dto.IssueRequest {
+- String titolo
+- String descrizione
+- IssueType tipologia
+- String img
+- IssuePriority priorita
+- IssueStatus stato
++ IssueType getTipologia()
++ void setTipologia(IssueType)
++ String getTitolo()
++ void setTitolo(String)
++ String getDescrizione()
++ void setDescrizione(String)
++ String getImg()
++ void setImg(String)
++ IssuePriority getPriorita()
++ void setPriorita(IssuePriority)
++ IssueStatus getStato()
++ void setStato(IssueStatus)
+}
+
+
+class org.unina.bugboard.backend.service.impl.CommentoServiceImpl {
+- CommentoRepository commentoRepository
++ List<Commento> getAllComments()
++ List<Commento> getCommentsByIssueId(Integer)
++ Optional<Commento> getCommentById(Integer)
++ Commento createComment(Commento)
+}
+
+
+class org.unina.bugboard.backend.security.UserDetailsImpl {
+- Integer id
+- String email
+- String password
+- Collection<? extends GrantedAuthority> authorities
++ {static} UserDetailsImpl build(Utente)
++ Collection<? extends GrantedAuthority> getAuthorities()
++ Integer getId()
++ String getEmail()
++ String getPassword()
++ String getUsername()
++ boolean isAccountNonExpired()
++ boolean isAccountNonLocked()
++ boolean isCredentialsNonExpired()
++ boolean isEnabled()
++ boolean equals(Object)
+}
+
+
+class org.unina.bugboard.backend.service.impl.UserDetailsServiceImpl {
+~ UtenteRepository utenteRepository
++ UserDetails loadUserByUsername(String)
+}
+
+
+class org.unina.bugboard.backend.security.JwtUtils {
+- String jwtSecret
+- int jwtExpirationMs
+- SecretKey key()
++ String generateJwtToken(Authentication)
++ String getUserNameFromJwtToken(String)
++ boolean validateJwtToken(String)
+}
+
+
+class org.unina.bugboard.backend.controller.IssueController {
+- IssueService issueService
+- UtenteService utenteService
+- IssueMapper issueMapper
++ List<IssueDTO> getAllIssues()
++ ResponseEntity<IssueDTO> getIssueById(Integer)
++ ResponseEntity<IssueDTO> createIssue(IssueRequest)
+}
+
+
+class org.unina.bugboard.backend.dto.LoginRequest {
+- String email
+- String password
++ String getEmail()
++ void setEmail(String)
++ String getPassword()
++ void setPassword(String)
+}
+
+
+class org.unina.bugboard.backend.controller.CommentoController {
+- CommentoService commentoService
+- UtenteService utenteService
+- IssueService issueService
+- CommentoMapper commentoMapper
++ List<CommentoDTO> getAllComments()
++ List<CommentoDTO> getCommentsByIssue(Integer)
++ ResponseEntity<CommentoDTO> createComment(CommentoRequest)
+}
+
+
+class org.unina.bugboard.backend.dto.LoginResponse {
+- String token
+- String type
+- Integer id
+- String email
+- List<String> roles
++ String getToken()
++ void setToken(String)
++ String getType()
++ void setType(String)
++ Integer getId()
++ void setId(Integer)
++ String getEmail()
++ void setEmail(String)
++ List<String> getRoles()
++ void setRoles(List<String>)
+}
+
+
+interface org.unina.bugboard.backend.repository.CommentoRepository {
+~ List<Commento> findByAppartieneId(Integer)
+}
+
+class org.unina.bugboard.backend.service.impl.IssueServiceImpl {
+- IssueRepository issueRepository
++ List<Issue> getAllIssues()
++ Optional<Issue> getIssueById(Integer)
++ Issue createIssue(Issue)
++ List<Issue> getIssuesByStatus(String)
+}
+
+
+class org.unina.bugboard.backend.dto.UserCreationRequest {
+- String email
+- String password
+- Role role
++ String getEmail()
++ void setEmail(String)
++ String getPassword()
++ void setPassword(String)
++ Role getRole()
++ void setRole(Role)
+}
+
+
+enum org.unina.bugboard.backend.model.enums.Role {
++  USER
++  ADMIN
+}
+
+interface org.unina.bugboard.backend.repository.IssueRepository {
+~ List<Issue> findByStato(String)
+~ List<Issue> findByPriorita(String)
+~ List<Issue> findByCreataDaId(Integer)
+}
+
+interface org.unina.bugboard.backend.service.IssueService {
+~ List<Issue> getAllIssues()
+~ Optional<Issue> getIssueById(Integer)
+~ Issue createIssue(Issue)
+~ List<Issue> getIssuesByStatus(String)
+}
+
+enum org.unina.bugboard.backend.model.enums.IssuePriority {
++  LOW
++  MEDIUM
++  HIGH
+}
+
+interface org.unina.bugboard.backend.api.UtenteApi {
+~ List<UtenteDTO> getAllUsers()
+~ ResponseEntity<UtenteDTO> getUserById(Integer)
+~ ResponseEntity<UtenteDTO> getUserByEmail(String)
+~ ResponseEntity<UtenteDTO> createUser(org.unina.bugboard.backend.dto.UserCreationRequest)
+}
+
+class org.unina.bugboard.backend.security.AuthEntryPointJwt {
+- {static} Logger logger
++ void commence(HttpServletRequest,HttpServletResponse,AuthenticationException)
+}
+
+
+interface org.unina.bugboard.backend.api.CommentoApi {
+~ List<CommentoDTO> getAllComments()
+~ List<CommentoDTO> getCommentsByIssue(Integer)
+~ ResponseEntity<CommentoDTO> createComment(CommentoRequest)
+}
+
+class org.unina.bugboard.backend.mapper.CommentoMapper {
+- UtenteMapper utenteMapper
++ CommentoDTO toDTO(Commento)
+}
+
+
+class org.unina.bugboard.backend.controller.UtenteController {
+- UtenteService utenteService
+- UtenteMapper utenteMapper
++ List<UtenteDTO> getAllUsers()
++ ResponseEntity<UtenteDTO> getUserById(Integer)
++ ResponseEntity<UtenteDTO> getUserByEmail(String)
++ ResponseEntity<UtenteDTO> createUser(UserCreationRequest)
+}
+
+
+class org.unina.bugboard.backend.dto.IssueDTO {
+- Integer id
+- IssueType tipologia
+- String titolo
+- String descrizione
+- String img
+- IssueStatus stato
+- IssuePriority priorita
+- UtenteDTO creataDa
++ Integer getId()
++ void setId(Integer)
++ IssueType getTipologia()
++ void setTipologia(IssueType)
++ String getTitolo()
++ void setTitolo(String)
++ String getDescrizione()
++ void setDescrizione(String)
++ String getImg()
++ void setImg(String)
++ IssueStatus getStato()
++ void setStato(IssueStatus)
++ IssuePriority getPriorita()
++ void setPriorita(IssuePriority)
++ UtenteDTO getCreataDa()
++ void setCreataDa(UtenteDTO)
+}
+
+
+class org.unina.bugboard.backend.dto.CommentoRequest {
+- String descrizione
+- Integer appartieneId
++ String getDescrizione()
++ void setDescrizione(String)
++ Integer getAppartieneId()
++ void setAppartieneId(Integer)
+}
+
+
+class org.unina.bugboard.backend.config.SecurityConfig {
+~ UserDetailsServiceImpl userDetailsService
+- AuthEntryPointJwt unauthorizedHandler
+- JwtAuthenticationFilter jwtAuthenticationFilter
++ DaoAuthenticationProvider authenticationProvider()
++ AuthenticationManager authenticationManager(AuthenticationConfiguration)
++ PasswordEncoder passwordEncoder()
++ SecurityFilterChain filterChain(HttpSecurity)
+}
+
+
+class org.unina.bugboard.backend.dto.CommentoDTO {
+- Integer id
+- String descrizione
+- LocalDateTime data
+- UtenteDTO scrittoDa
+- Integer appartieneId
++ Integer getId()
++ void setId(Integer)
++ String getDescrizione()
++ void setDescrizione(String)
++ LocalDateTime getData()
++ void setData(LocalDateTime)
++ UtenteDTO getScrittoDa()
++ void setScrittoDa(UtenteDTO)
++ Integer getAppartieneId()
++ void setAppartieneId(Integer)
+}
+
+
+interface org.unina.bugboard.backend.api.AuthApi {
+~ ResponseEntity<?> login(LoginRequest)
+}
+
+class org.unina.bugboard.backend.controller.AuthController {
+- AuthenticationManager authenticationManager
+- JwtUtils jwtUtils
++ ResponseEntity<?> login(LoginRequest)
+}
+
+
+class org.unina.bugboard.backend.service.impl.UtenteServiceImpl {
+- UtenteRepository utenteRepository
++ List<Utente> getAllUsers()
++ Optional<Utente> getUserById(Integer)
++ Optional<Utente> getUserByEmail(String)
++ Utente createUser(Utente)
+}
+
+
+enum org.unina.bugboard.backend.model.enums.IssueStatus {
++  TODO
++  IN_PROGRESS
++  DONE
+}
+
+class org.unina.bugboard.backend.model.Commento {
+- Integer id
+- String descrizione
+- LocalDateTime data
+- Utente scrittoDa
+- Issue appartiene
++ Integer getId()
++ void setId(Integer)
++ String getDescrizione()
++ void setDescrizione(String)
++ LocalDateTime getData()
++ void setData(LocalDateTime)
++ Utente getScrittoDa()
++ void setScrittoDa(Utente)
++ Issue getAppartiene()
++ void setAppartiene(Issue)
+}
+
+
+class org.unina.bugboard.backend.dto.UtenteDTO {
+- Integer id
+- String email
+- Role role
++ Integer getId()
++ void setId(Integer)
++ String getEmail()
++ void setEmail(String)
++ Role getRole()
++ void setRole(Role)
+}
+
+
+
+
+org.springframework.data.jpa.repository.JpaRepository <|-- org.unina.bugboard.backend.repository.UtenteRepository
+org.springframework.web.filter.OncePerRequestFilter <|-- org.unina.bugboard.backend.security.JwtAuthenticationFilter
+org.unina.bugboard.backend.service.CommentoService <|.. org.unina.bugboard.backend.service.impl.CommentoServiceImpl
+org.springframework.security.core.userdetails.UserDetails <|.. org.unina.bugboard.backend.security.UserDetailsImpl
+org.springframework.security.core.userdetails.UserDetailsService <|.. org.unina.bugboard.backend.service.impl.UserDetailsServiceImpl
+org.unina.bugboard.backend.api.IssueApi <|.. org.unina.bugboard.backend.controller.IssueController
+org.unina.bugboard.backend.api.CommentoApi <|.. org.unina.bugboard.backend.controller.CommentoController
+org.springframework.data.jpa.repository.JpaRepository <|-- org.unina.bugboard.backend.repository.CommentoRepository
+org.unina.bugboard.backend.service.IssueService <|.. org.unina.bugboard.backend.service.impl.IssueServiceImpl
+org.springframework.data.jpa.repository.JpaRepository <|-- org.unina.bugboard.backend.repository.IssueRepository
+org.springframework.security.web.AuthenticationEntryPoint <|.. org.unina.bugboard.backend.security.AuthEntryPointJwt
+org.unina.bugboard.backend.api.UtenteApi <|.. org.unina.bugboard.backend.controller.UtenteController
+org.unina.bugboard.backend.api.AuthApi <|.. org.unina.bugboard.backend.controller.AuthController
+org.unina.bugboard.backend.service.UtenteService <|.. org.unina.bugboard.backend.service.impl.UtenteServiceImpl
+@enduml

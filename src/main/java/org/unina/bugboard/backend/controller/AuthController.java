@@ -38,7 +38,6 @@ public class AuthController implements AuthApi {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
@@ -46,9 +45,12 @@ public class AuthController implements AuthApi {
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(new LoginResponse(jwt,
-                userDetails.getId(),
-                userDetails.getEmail(),
-                roles));
+        // ? good
+        return ResponseEntity.ok(
+                new LoginResponse(
+                        jwt,
+                        userDetails.getId(),
+                        userDetails.getEmail(),
+                        roles));
     }
 }

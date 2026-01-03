@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+//adapter tra utente e UserDetails di Spring Security
 public class UserDetailsImpl implements UserDetails {
 
     private Integer id;
@@ -29,6 +30,7 @@ public class UserDetailsImpl implements UserDetails {
         this.authorities = authorities;
     }
 
+    // ! utente ?
     public static UserDetailsImpl build(Utente utente) {
         List<GrantedAuthority> authorities = Collections.singletonList(
                 new SimpleGrantedAuthority("ROLE_" + utente.getRole().name()));

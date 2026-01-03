@@ -14,9 +14,13 @@ public class UtenteServiceImpl implements UtenteService {
 
     private final UtenteRepository utenteRepository;
 
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+
     @Autowired
-    public UtenteServiceImpl(UtenteRepository utenteRepository) {
+    public UtenteServiceImpl(UtenteRepository utenteRepository,
+            org.springframework.security.crypto.password.PasswordEncoder passwordEncoder) {
         this.utenteRepository = utenteRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -36,6 +40,7 @@ public class UtenteServiceImpl implements UtenteService {
 
     @Override
     public Utente createUser(Utente utente) {
+        utente.setPassword(passwordEncoder.encode(utente.getPassword()));
         return utenteRepository.save(utente);
     }
 
