@@ -19,7 +19,6 @@ import org.unina.bugboard.backend.service.UtenteService;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -43,14 +42,14 @@ public class CommentoController implements CommentoApi {
     public List<CommentoDTO> getAllComments() {
         return commentoService.getAllComments().stream()
                 .map(commentoMapper::toDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override
     public List<CommentoDTO> getCommentsByIssue(Integer issueId) {
         return commentoService.getCommentsByIssueId(issueId).stream()
                 .map(commentoMapper::toDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

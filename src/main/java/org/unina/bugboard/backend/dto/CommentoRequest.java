@@ -11,6 +11,7 @@ public class CommentoRequest {
     private Integer appartieneId;
 
     public CommentoRequest() {
+        // Default constructor
     }
 
     public String getDescrizione() {

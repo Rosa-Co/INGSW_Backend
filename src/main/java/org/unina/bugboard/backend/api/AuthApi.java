@@ -6,10 +6,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.unina.bugboard.backend.dto.LoginRequest;
+import org.unina.bugboard.backend.dto.LoginResponse;
 
 @RequestMapping("/api/auth")
 public interface AuthApi {
 
     @PostMapping("/login")
-    ResponseEntity<?> login(@Valid @RequestBody LoginRequest loginRequest);
+    ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest);
 }

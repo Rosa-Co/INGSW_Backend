@@ -19,6 +19,7 @@ public class UserCreationRequest {
     private Role role;
 
     public UserCreationRequest() {
+        // Default constructor
     }
 
     public UserCreationRequest(String email, String password, Role role) {

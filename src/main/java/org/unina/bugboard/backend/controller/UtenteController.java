@@ -12,7 +12,6 @@ import org.unina.bugboard.backend.model.Utente;
 import org.unina.bugboard.backend.service.UtenteService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -32,7 +31,7 @@ public class UtenteController implements UtenteApi {
     public List<UtenteDTO> getAllUsers() {
         return utenteService.getAllUsers().stream()
                 .map(utenteMapper::toDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

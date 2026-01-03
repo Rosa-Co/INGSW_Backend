@@ -10,6 +10,7 @@ public class CommentoDTO {
     private Integer appartieneId;
 
     public CommentoDTO() {
+        // Default constructor
     }
 
     public CommentoDTO(Integer id, String descrizione, LocalDateTime data, UtenteDTO scrittoDa, Integer appartieneId) {

@@ -15,6 +15,7 @@ public class IssueDTO {
     private UtenteDTO creataDa;
 
     public IssueDTO() {
+        // Default constructor
     }
 
     public IssueDTO(Integer id, IssueType tipologia, String titolo, String descrizione, String img, IssueStatus stato,

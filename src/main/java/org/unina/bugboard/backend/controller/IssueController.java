@@ -17,7 +17,6 @@ import org.unina.bugboard.backend.service.IssueService;
 import org.unina.bugboard.backend.service.UtenteService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -38,7 +37,7 @@ public class IssueController implements IssueApi {
     public List<IssueDTO> getAllIssues() {
         return issueService.getAllIssues().stream()
                 .map(issueMapper::toDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Override

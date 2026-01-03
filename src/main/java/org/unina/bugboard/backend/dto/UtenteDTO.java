@@ -8,6 +8,7 @@ public class UtenteDTO {
     private Role role;
 
     public UtenteDTO() {
+        // Default constructor
     }
 
     public UtenteDTO(Integer id, String email, Role role) {

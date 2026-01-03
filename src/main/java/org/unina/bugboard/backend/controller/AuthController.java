@@ -15,7 +15,6 @@ import org.unina.bugboard.backend.security.JwtUtils;
 import org.unina.bugboard.backend.security.UserDetailsImpl;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -40,7 +39,7 @@ public class AuthController implements AuthApi {
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList());
+                .toList();
 
         // ? good
         return ResponseEntity.ok(

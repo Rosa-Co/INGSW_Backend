@@ -20,6 +20,7 @@ public class IssueRequest {
     private IssueStatus stato; // Optional for update
 
     public IssueRequest() {
+        // Default constructor
     }
 
     public IssueType getTipologia() {
