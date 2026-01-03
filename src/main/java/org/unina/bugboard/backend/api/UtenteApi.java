@@ -25,6 +25,5 @@ public interface UtenteApi {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    ResponseEntity<UtenteDTO> createUser(
-            @RequestBody @Valid org.unina.bugboard.backend.dto.UserCreationRequest userCreationRequest);
+    ResponseEntity<UtenteDTO> createUser(@RequestBody @Valid UserCreationRequest userCreationRequest);
 }

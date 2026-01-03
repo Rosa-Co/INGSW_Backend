@@ -54,7 +54,7 @@ public class CommentoController implements CommentoApi {
     }
 
     @Override
-    public ResponseEntity<CommentoDTO> createComment(@Valid @RequestBody CommentoRequest commentoRequest) {
+    public ResponseEntity<CommentoDTO> createComment(CommentoRequest commentoRequest) {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
         Utente currentUser = utenteService.getUserByEmail(userDetails.getEmail())

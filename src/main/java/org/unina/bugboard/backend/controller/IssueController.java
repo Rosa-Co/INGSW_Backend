@@ -42,7 +42,7 @@ public class IssueController implements IssueApi {
     }
 
     @Override
-    public ResponseEntity<IssueDTO> getIssueById(@PathVariable Integer id) {
+    public ResponseEntity<IssueDTO> getIssueById(Integer id) {
         return issueService.getIssueById(id)
                 .map(issueMapper::toDTO)
                 .map(ResponseEntity::ok)
@@ -50,7 +50,7 @@ public class IssueController implements IssueApi {
     }
 
     @Override
-    public ResponseEntity<IssueDTO> createIssue(@Valid @RequestBody IssueRequest issueRequest) {
+    public ResponseEntity<IssueDTO> createIssue(IssueRequest issueRequest) {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
                 .getPrincipal();
         Utente currentUser = utenteService.getUserByEmail(userDetails.getEmail())

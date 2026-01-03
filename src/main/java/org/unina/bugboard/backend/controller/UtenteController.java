@@ -35,7 +35,7 @@ public class UtenteController implements UtenteApi {
     }
 
     @Override
-    public ResponseEntity<UtenteDTO> getUserById(@PathVariable Integer id) {
+    public ResponseEntity<UtenteDTO> getUserById(Integer id) {
         return utenteService.getUserById(id)
                 .map(utenteMapper::toDTO)
                 .map(ResponseEntity::ok)
@@ -43,7 +43,7 @@ public class UtenteController implements UtenteApi {
     }
 
     @Override
-    public ResponseEntity<UtenteDTO> getUserByEmail(@PathVariable String email) {
+    public ResponseEntity<UtenteDTO> getUserByEmail(String email) {
         return utenteService.getUserByEmail(email)
                 .map(utenteMapper::toDTO)
                 .map(ResponseEntity::ok)
@@ -51,7 +51,7 @@ public class UtenteController implements UtenteApi {
     }
 
     @Override
-    public ResponseEntity<UtenteDTO> createUser(@RequestBody @Valid UserCreationRequest userCreationRequest) {
+    public ResponseEntity<UtenteDTO> createUser(UserCreationRequest userCreationRequest) {
         Utente utenteToCreate = utenteMapper.toEntity(userCreationRequest);
         Utente created = utenteService.createUser(utenteToCreate);
         return ResponseEntity.ok(utenteMapper.toDTO(created));
