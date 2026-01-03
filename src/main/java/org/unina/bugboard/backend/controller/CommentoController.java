@@ -47,7 +47,7 @@ public class CommentoController implements CommentoApi {
     }
 
     @Override
-    public List<CommentoDTO> getCommentsByIssue(@PathVariable Integer issueId) {
+    public List<CommentoDTO> getCommentsByIssue(Integer issueId) {
         return commentoService.getCommentsByIssueId(issueId).stream()
                 .map(commentoMapper::toDTO)
                 .collect(Collectors.toList());
