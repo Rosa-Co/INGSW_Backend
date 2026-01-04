@@ -11,7 +11,9 @@ import org.unina.bugboard.backend.dto.IssueRequest;
 import org.unina.bugboard.backend.mapper.IssueMapper;
 import org.unina.bugboard.backend.model.Issue;
 import org.unina.bugboard.backend.model.Utente;
+import org.unina.bugboard.backend.model.enums.IssuePriority;
 import org.unina.bugboard.backend.model.enums.IssueStatus;
+import org.unina.bugboard.backend.model.enums.IssueType;
 import org.unina.bugboard.backend.security.UserDetailsImpl;
 import org.unina.bugboard.backend.service.IssueService;
 import org.unina.bugboard.backend.service.UtenteService;
@@ -34,8 +36,9 @@ public class IssueController implements IssueApi {
     }
 
     @Override
-    public List<IssueDTO> getAllIssues() {
-        return issueService.getAllIssues().stream()
+    public List<IssueDTO> getAllIssues(IssueType tipologia, IssueStatus stato, IssuePriority priorita, String sortBy,
+            String sortDir) {
+        return issueService.getAllIssues(tipologia, stato, priorita, sortBy, sortDir).stream()
                 .map(issueMapper::toDTO)
                 .toList();
     }
