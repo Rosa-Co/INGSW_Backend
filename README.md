@@ -18,3 +18,7 @@ Struttura del progetto:
 * **`/mapper`**: Logica di conversione tra Entity e DTO.
 * **`/security`**: Configurazione della sicurezza (autenticazione/autorizzazione).
 * **`/config`**: Classi di configurazione generale di Spring.
+
+Requisiti: 
+* Java JDK
+* Maven
