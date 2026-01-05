@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  backend:
+    build: .
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    volumes:
+      - ./uploads:/app/uploads
+    # Restart on failure to handle temporary database connection issues
+    restart: on-failure
