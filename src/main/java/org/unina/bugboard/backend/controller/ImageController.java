@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.unina.bugboard.backend.api.ImageApi;
@@ -13,7 +13,7 @@ import org.unina.bugboard.backend.service.IssueService;
 import java.io.IOException;
 
 @RestController
-@CrossOrigin(origins = "*")
+@RequestMapping("/api/images")
 public class ImageController implements ImageApi {
 
     private final IssueService issueService;

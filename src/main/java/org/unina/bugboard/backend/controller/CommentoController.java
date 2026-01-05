@@ -3,7 +3,7 @@ package org.unina.bugboard.backend.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.unina.bugboard.backend.api.CommentoApi;
 import org.unina.bugboard.backend.dto.CommentoDTO;
@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "*")
+@RequestMapping("/api/comments")
 public class CommentoController implements CommentoApi {
 
         private final CommentoService commentoService;

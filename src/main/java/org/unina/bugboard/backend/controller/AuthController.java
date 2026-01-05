@@ -6,7 +6,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.unina.bugboard.backend.api.AuthApi;
 import org.unina.bugboard.backend.dto.LoginRequest;
@@ -17,7 +17,8 @@ import org.unina.bugboard.backend.security.UserDetailsImpl;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "*")
+@RequestMapping("/api/auth")
+// @CrossOrigin removed
 public class AuthController implements AuthApi {
 
         private final AuthenticationManager authenticationManager;

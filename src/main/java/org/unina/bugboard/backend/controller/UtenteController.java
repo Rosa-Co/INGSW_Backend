@@ -2,7 +2,7 @@ package org.unina.bugboard.backend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.unina.bugboard.backend.api.UtenteApi;
 import org.unina.bugboard.backend.dto.UserCreationRequest;
@@ -14,7 +14,7 @@ import org.unina.bugboard.backend.service.UtenteService;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "*")
+@RequestMapping("/api/users")
 public class UtenteController implements UtenteApi {
 
     private final UtenteService utenteService;
