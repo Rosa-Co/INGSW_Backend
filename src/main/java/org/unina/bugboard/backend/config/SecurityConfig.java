@@ -29,7 +29,8 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Autowired
-    public SecurityConfig(UserDetailsServiceImpl userDetailsService, AuthEntryPointJwt unauthorizedHandler, JwtAuthenticationFilter jwtAuthenticationFilter) {
+    public SecurityConfig(UserDetailsServiceImpl userDetailsService, AuthEntryPointJwt unauthorizedHandler,
+            JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.userDetailsService = userDetailsService;
         this.unauthorizedHandler = unauthorizedHandler;
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
@@ -40,7 +41,7 @@ public class SecurityConfig {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
         authProvider.setUserDetailsService(userDetailsService);
-        //Imposto il password encoder
+        // Imposto il password encoder
         authProvider.setPasswordEncoder(passwordEncoder());
 
         return authProvider;
@@ -61,10 +62,11 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll() // Auth endpoints
-                        .requestMatchers("/api/users/**").authenticated() // Require auth for user operations
-                        .requestMatchers("/api/issues/**").authenticated()
+                .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/users/**").authenticated()
                         .requestMatchers("/api/comments/**").authenticated()
+                        .requestMatchers("/api/images/**").authenticated()
+                        .requestMatchers("/api/issues/**").authenticated()
                         .requestMatchers("/api/test/**").permitAll()
                         .anyRequest().authenticated());
         http.authenticationProvider(authenticationProvider());

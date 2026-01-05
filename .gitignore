@@ -31,3 +31,12 @@ build/
 
 ### VS Code ###
 .vscode/
+
+*.jpg
+
+*.png
+
+# Environment variables
+.env
+
+.env.example
