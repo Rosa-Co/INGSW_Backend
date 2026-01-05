@@ -1,11 +1,18 @@
 package org.unina.bugboard.backend.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.unina.bugboard.backend.model.enums.IssuePriority;
 import org.unina.bugboard.backend.model.enums.IssueStatus;
 import org.unina.bugboard.backend.model.enums.IssueType;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class IssueRequest {
     @NotBlank(message = "Title cannot be empty")
     @Size(min = 3, max = 100, message = "Title must be between 3 and 100 characters")
@@ -14,60 +21,13 @@ public class IssueRequest {
     @NotBlank(message = "Description cannot be empty")
     private String descrizione;
 
+    @NotNull(message = "Type is mandatory")
     private IssueType tipologia;
+
     private String img;
+
+    @NotNull(message = "Priority is mandatory")
     private IssuePriority priorita;
+
     private IssueStatus stato; // Optional for update
-
-    public IssueRequest() {
-        // Default constructor
-    }
-
-    public IssueType getTipologia() {
-        return tipologia;
-    }
-
-    public void setTipologia(IssueType tipologia) {
-        this.tipologia = tipologia;
-    }
-
-    public String getTitolo() {
-        return titolo;
-    }
-
-    public void setTitolo(String titolo) {
-        this.titolo = titolo;
-    }
-
-    public String getDescrizione() {
-        return descrizione;
-    }
-
-    public void setDescrizione(String descrizione) {
-        this.descrizione = descrizione;
-    }
-
-    public String getImg() {
-        return img;
-    }
-
-    public void setImg(String img) {
-        this.img = img;
-    }
-
-    public IssuePriority getPriorita() {
-        return priorita;
-    }
-
-    public void setPriorita(IssuePriority priorita) {
-        this.priorita = priorita;
-    }
-
-    public IssueStatus getStato() {
-        return stato;
-    }
-
-    public void setStato(IssueStatus stato) {
-        this.stato = stato;
-    }
 }

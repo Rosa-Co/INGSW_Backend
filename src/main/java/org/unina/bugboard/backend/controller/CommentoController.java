@@ -24,52 +24,53 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class CommentoController implements CommentoApi {
 
-    private final CommentoService commentoService;
-    private final UtenteService utenteService;
-    private final IssueService issueService;
-    private final CommentoMapper commentoMapper;
+        private final CommentoService commentoService;
+        private final UtenteService utenteService;
+        private final IssueService issueService;
+        private final CommentoMapper commentoMapper;
 
-    @Autowired
-    public CommentoController(CommentoService commentoService, UtenteService utenteService, IssueService issueService,
-            CommentoMapper commentoMapper) {
-        this.commentoService = commentoService;
-        this.utenteService = utenteService;
-        this.issueService = issueService;
-        this.commentoMapper = commentoMapper;
-    }
+        @Autowired
+        public CommentoController(CommentoService commentoService, UtenteService utenteService,
+                        IssueService issueService,
+                        CommentoMapper commentoMapper) {
+                this.commentoService = commentoService;
+                this.utenteService = utenteService;
+                this.issueService = issueService;
+                this.commentoMapper = commentoMapper;
+        }
 
-    @Override
-    public List<CommentoDTO> getAllComments() {
-        return commentoService.getAllComments().stream()
-                .map(commentoMapper::toDTO)
-                .toList();
-    }
+        @Override
+        public List<CommentoDTO> getAllComments() {
+                return commentoService.getAllComments().stream()
+                                .map(commentoMapper::toDTO)
+                                .toList();
+        }
 
-    @Override
-    public List<CommentoDTO> getCommentsByIssue(Integer issueId) {
-        return commentoService.getCommentsByIssueId(issueId).stream()
-                .map(commentoMapper::toDTO)
-                .toList();
-    }
+        @Override
+        public List<CommentoDTO> getCommentsByIssue(Integer issueId) {
+                return commentoService.getCommentsByIssueId(issueId).stream()
+                                .map(commentoMapper::toDTO)
+                                .toList();
+        }
 
-    @Override
-    public ResponseEntity<CommentoDTO> createComment(CommentoRequest commentoRequest) {
-        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-        Utente currentUser = utenteService.getUserByEmail(userDetails.getEmail())
-                .orElseThrow(() -> new RuntimeException("Authenticated user not found"));
+        @Override
+        public ResponseEntity<CommentoDTO> createComment(CommentoRequest commentoRequest) {
+                UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
+                                .getPrincipal();
+                Utente currentUser = utenteService.getUserByEmail(userDetails.getEmail())
+                                .orElseThrow(() -> new RuntimeException("Authenticated user not found"));
 
-        Issue issue = issueService.getIssueById(commentoRequest.getAppartieneId())
-                .orElseThrow(() -> new RuntimeException("Issue not found"));
+                Issue issue = issueService.getIssueById(commentoRequest.getAppartieneId())
+                                .orElseThrow(() -> new RuntimeException("Issue not found"));
 
-        Commento commento = new Commento();
-        commento.setDescrizione(commentoRequest.getDescrizione());
-        commento.setData(LocalDateTime.now());
-        commento.setScrittoDa(currentUser);
-        commento.setAppartiene(issue);
+                Commento commento = new Commento();
+                commento.setDescrizione(commentoRequest.getDescrizione());
+                commento.setData(LocalDateTime.now());
+                commento.setScrittoDa(currentUser);
+                commento.setAppartiene(issue);
 
-        Commento created = commentoService.createComment(commento);
-        return ResponseEntity.ok(commentoMapper.toDTO(created));
-    }
+                Commento created = commentoService.createComment(commento);
+                return ResponseEntity.ok(commentoMapper.toDTO(created));
+        }
 
 }

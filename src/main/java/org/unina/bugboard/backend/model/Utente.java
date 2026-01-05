@@ -1,10 +1,20 @@
 package org.unina.bugboard.backend.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.unina.bugboard.backend.model.enums.Role;
 
 @Entity
 @Table(name = "utente")
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class Utente {
 
     @Id
@@ -21,45 +31,4 @@ public class Utente {
     @Column(name = "ruolo", nullable = false)
     private Role role = Role.USER;
 
-    public Utente() {
-    }
-
-    public Utente(Integer id, String email, String password, Role role) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.role = role;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
-        this.role = role;
-    }
 }

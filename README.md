@@ -1,4 +1,4 @@
-Questo è il backend per l'applicazione **BugBoard**, sviluppato come progetto per il corso di Ingegneria del Software 
+Questo è il backend per l'applicazione **BugBoard**, sviluppato come progetto per il corso di Ingegneria del Software.
 Il sistema gestisce la logica lato server, le API REST e la persistenza dei dati per la piattaforma di gestione bug/ticket.
 
 Tecnologie utilizzate:

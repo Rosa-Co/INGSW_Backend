@@ -64,6 +64,15 @@ public class IssueServiceImpl implements IssueService {
         Issue issue = issueRepository.findById(issueId)
                 .orElseThrow(() -> new RuntimeException("Issue not found with id: " + issueId));
 
+        String relativePath = saveFile(file);
+
+        issue.setImg(relativePath);
+        issueRepository.save(issue);
+
+        return relativePath;
+    }
+
+    private String saveFile(MultipartFile file) throws IOException {
         String uploadDir = System.getProperty("user.dir") + "/uploads/";
         Path uploadPath = Paths.get(uploadDir);
 
@@ -82,11 +91,7 @@ public class IssueServiceImpl implements IssueService {
 
         Files.copy(file.getInputStream(), filePath);
 
-        String relativePath = "uploads/" + fileName;
-        issue.setImg(relativePath);
-        issueRepository.save(issue);
-
-        return relativePath;
+        return "uploads/" + fileName;
     }
 
     @Override

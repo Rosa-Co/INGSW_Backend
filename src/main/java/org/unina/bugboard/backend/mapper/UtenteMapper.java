@@ -27,7 +27,6 @@ public class UtenteMapper {
         utente.setPassword(request.getPassword()); // Ideally hashed here or in service
         utente.setRole(request.getRole());
 
-
         return utente;
     }
 }

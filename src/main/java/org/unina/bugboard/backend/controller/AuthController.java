@@ -20,33 +20,34 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class AuthController implements AuthApi {
 
-    private final AuthenticationManager authenticationManager;
-    private final JwtUtils jwtUtils;
+        private final AuthenticationManager authenticationManager;
+        private final JwtUtils jwtUtils;
 
-    @Autowired
-    public AuthController(AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
-        this.authenticationManager = authenticationManager;
-        this.jwtUtils = jwtUtils;
-    }
+        @Autowired
+        public AuthController(AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
+                this.authenticationManager = authenticationManager;
+                this.jwtUtils = jwtUtils;
+        }
 
-    @Override
-    public ResponseEntity<LoginResponse> login(LoginRequest loginRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+        @Override
+        public ResponseEntity<LoginResponse> login(LoginRequest loginRequest) {
+                Authentication authentication = authenticationManager.authenticate(
+                                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(),
+                                                loginRequest.getPassword()));
 
-        String jwt = jwtUtils.generateJwtToken(authentication);
+                String jwt = jwtUtils.generateJwtToken(authentication);
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        List<String> roles = userDetails.getAuthorities().stream()
-                .map(GrantedAuthority::getAuthority)
-                .toList();
+                UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
+                List<String> roles = userDetails.getAuthorities().stream()
+                                .map(GrantedAuthority::getAuthority)
+                                .toList();
 
-        // ? good
-        return ResponseEntity.ok(
-                new LoginResponse(
-                        jwt,
-                        userDetails.getId(),
-                        userDetails.getEmail(),
-                        roles));
-    }
+                // ? good
+                return ResponseEntity.ok(
+                                new LoginResponse(
+                                                jwt,
+                                                userDetails.getId(),
+                                                userDetails.getEmail(),
+                                                roles));
+        }
 }
