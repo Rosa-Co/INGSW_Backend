@@ -20,6 +20,10 @@ import org.unina.bugboard.backend.service.UtenteService;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Controller per la gestione dei commenti.
+ * Fornisce endpoint per creare e recuperare commenti.
+ */
 @RestController
 @RequestMapping("/api/comments")
 public class CommentoController implements CommentoApi {
@@ -29,6 +33,14 @@ public class CommentoController implements CommentoApi {
         private final IssueService issueService;
         private final CommentoMapper commentoMapper;
 
+        /**
+         * Costruttore per l'iniezione delle dipendenze.
+         *
+         * @param commentoService servizio per la logica di business dei commenti
+         * @param utenteService   servizio per la gestione degli utenti
+         * @param issueService    servizio per la gestione delle issue
+         * @param commentoMapper  mapper per convertire tra entity e DTO
+         */
         @Autowired
         public CommentoController(CommentoService commentoService, UtenteService utenteService,
                         IssueService issueService,
@@ -39,6 +51,11 @@ public class CommentoController implements CommentoApi {
                 this.commentoMapper = commentoMapper;
         }
 
+        /**
+         * Recupera tutti i commenti presenti nel sistema.
+         *
+         * @return una lista di CommentoDTO
+         */
         @Override
         public List<CommentoDTO> getAllComments() {
                 return commentoService.getAllComments().stream()
@@ -46,6 +63,12 @@ public class CommentoController implements CommentoApi {
                                 .toList();
         }
 
+        /**
+         * Recupera tutti i commenti associati a una specifica issue.
+         *
+         * @param issueId l'ID dell'issue di cui recuperare i commenti
+         * @return una lista di CommentoDTO appartenenti all'issue specificata
+         */
         @Override
         public List<CommentoDTO> getCommentsByIssue(Integer issueId) {
                 return commentoService.getCommentsByIssueId(issueId).stream()
@@ -53,6 +76,15 @@ public class CommentoController implements CommentoApi {
                                 .toList();
         }
 
+        /**
+         * Crea un nuovo commento per una issue.
+         *
+         * @param commentoRequest richiesta contenente il testo del commento e l'ID
+         *                        dell'issue
+         * @return 200 OK con il CommentoDTO appena creato
+         * @throws RuntimeException se l'utente autenticato o l'issue non vengono
+         *                          trovati
+         */
         @Override
         public ResponseEntity<CommentoDTO> createComment(CommentoRequest commentoRequest) {
                 UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()

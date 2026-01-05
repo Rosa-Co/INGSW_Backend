@@ -11,7 +11,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-//adapter tra utente e UserDetails di Spring Security
+/**
+ * Implementazione dell'interfaccia UserDetails di Spring Security.
+ * Funge da adapter tra l'entità Utente del dominio e i dettagli utente
+ * richiesti da Spring Security.
+ */
 public class UserDetailsImpl implements UserDetails {
 
     private final Integer id;
@@ -30,7 +34,13 @@ public class UserDetailsImpl implements UserDetails {
         this.authorities = authorities;
     }
 
-    // ! utente ?
+    /**
+     * Costruisce un'istanza di UserDetailsImpl a partire da un oggetto Utente.
+     * Mappa il ruolo dell'utente in una GrantedAuthority.
+     *
+     * @param utente L'entità Utente da convertire.
+     * @return Un oggetto UserDetailsImpl che rappresenta l'utente.
+     */
     public static UserDetailsImpl build(Utente utente) {
         List<GrantedAuthority> authorities = Collections.singletonList(
                 new SimpleGrantedAuthority("ROLE_" + utente.getRole().name()));

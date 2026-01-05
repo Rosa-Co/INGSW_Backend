@@ -18,6 +18,11 @@ import org.unina.bugboard.backend.security.AuthEntryPointJwt;
 import org.unina.bugboard.backend.security.JwtAuthenticationFilter;
 import org.unina.bugboard.backend.service.impl.UserDetailsServiceImpl;
 
+/**
+ * Configurazione della sicurezza dell'applicazione.
+ * Definisce i filtri, i provider di autenticazione e le regole di
+ * autorizzazione.
+ */
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
@@ -28,6 +33,13 @@ public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    /**
+     * Costruttore per l'iniezione delle dipendenze.
+     *
+     * @param userDetailsService      servizio per il recupero dei dettagli utente
+     * @param unauthorizedHandler     gestore delle eccezioni di autenticazione
+     * @param jwtAuthenticationFilter filtro per l'autenticazione tramite JWT
+     */
     @Autowired
     public SecurityConfig(UserDetailsServiceImpl userDetailsService, AuthEntryPointJwt unauthorizedHandler,
             JwtAuthenticationFilter jwtAuthenticationFilter) {
@@ -36,6 +48,12 @@ public class SecurityConfig {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
+    /**
+     * Configura il provider di autenticazione.
+     * Imposta il servizio per i dettagli utente e l'encoder per le password.
+     *
+     * @return il DaoAuthenticationProvider configurato
+     */
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
@@ -47,22 +65,45 @@ public class SecurityConfig {
         return authProvider;
     }
 
+    /**
+     * Espone l'AuthenticationManager come bean.
+     *
+     * @param authConfig la configurazione dell'autenticazione
+     * @return l'AuthenticationManager
+     * @throws Exception se si verificano errori durante la creazione
+     */
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
         return authConfig.getAuthenticationManager();
     }
 
+    /**
+     * Definisce il bean per l'hashing delle password.
+     * Utilizza BCrypt.
+     *
+     * @return il PasswordEncoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Configura la catena di filtri di sicurezza.
+     * Disabilita CSRF, gestisce le eccezioni, imposta la sessione come stateless
+     * e definisce le regole di accesso agli endpoint.
+     *
+     * @param http l'oggetto HttpSecurity da configurare
+     * @return la SecurityFilterChain costruita
+     * @throws Exception se si verificano errori durante la configurazione
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth.requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/api/users/**").authenticated()
                         .requestMatchers("/api/comments/**").authenticated()
                         .requestMatchers("/api/images/**").authenticated()

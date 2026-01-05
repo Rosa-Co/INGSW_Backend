@@ -12,10 +12,23 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Gestore globale delle eccezioni per l'applicazione.
+ * Intercetta le eccezioni lanciate dai controller e restituisce risposte HTTP
+ * appropriate.
+ */
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    private static final String ERROR= "error";
+    private static final String ERROR = "error";
 
+    /**
+     * Gestisce le eccezioni di validazione degli argomenti del metodo (es. @Valid
+     * fallito).
+     *
+     * @param ex l'eccezione MethodArgumentNotValidException
+     * @return una mappa contenente i nomi dei campi non validi e i relativi
+     *         messaggi di errore
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
@@ -27,6 +40,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
 
+    /**
+     * Gestisce l'eccezione FileNotFoundException.
+     *
+     * @param ex l'eccezione FileNotFoundException
+     * @return una risposta con messaggio di errore e stato 404 Not Found
+     */
     @ExceptionHandler(FileNotFoundException.class)
     public ResponseEntity<Map<String, String>> handleFileNotFoundException(FileNotFoundException ex) {
         Map<String, String> error = new HashMap<>();
@@ -34,6 +53,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
+    /**
+     * Gestisce l'eccezione IOException.
+     *
+     * @param ex l'eccezione IOException
+     * @return una risposta con messaggio di errore e stato 500 Internal Server
+     *         Error
+     */
     @ExceptionHandler(IOException.class)
     public ResponseEntity<Map<String, String>> handleIOException(IOException ex) {
         Map<String, String> error = new HashMap<>();
@@ -41,6 +67,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    /**
+     * Gestore generico per tutte le altre eccezioni non gestite specificamente.
+     *
+     * @param ex l'eccezione generica Exception
+     * @return una risposta con messaggio di errore e stato 500 Internal Server
+     *         Error
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, String>> handleGlobalException(Exception ex) {
         Map<String, String> error = new HashMap<>();

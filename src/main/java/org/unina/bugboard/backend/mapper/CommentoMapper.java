@@ -5,6 +5,10 @@ import org.springframework.stereotype.Component;
 import org.unina.bugboard.backend.dto.CommentoDTO;
 import org.unina.bugboard.backend.model.Commento;
 
+/**
+ * Componente responsabile della mappatura tra l'entità Commento e il DTO
+ * CommentoDTO.
+ */
 @Component
 public class CommentoMapper {
 
@@ -15,6 +19,12 @@ public class CommentoMapper {
         this.utenteMapper = utenteMapper;
     }
 
+    /**
+     * Converte un'entità Commento in un CommentoDTO.
+     *
+     * @param commento l'entità Commento da convertire
+     * @return il CommentoDTO corrispondente, o null se l'input è null
+     */
     public CommentoDTO toDTO(Commento commento) {
         if (commento == null) {
             return null;

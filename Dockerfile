@@ -1,30 +1,30 @@
-# Stage 1: Build the application
+# Fase 1: Costruzione dell'applicazione
 FROM eclipse-temurin:17-jdk-jammy AS build
 WORKDIR /app
 
-# Copy maven executable and pom.xml
+# Copia l'eseguibile maven e il file pom.xml
 COPY mvnw .
 COPY .mvn .mvn
 COPY pom.xml .
 
-# Download dependencies
+# Scarica le dipendenze
 RUN ./mvnw dependency:go-offline -B
 
-# Copy the source code
+# Copia il codice sorgente
 COPY src src
 
-# Package the application
+# Pacchettizza l'applicazione (salta i test per velocità)
 RUN ./mvnw package -DskipTests
 
-# Stage 2: Run the application
+# Fase 2: Esecuzione dell'applicazione
 FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 
-# Copy the jar from the build stage
+# Copia il jar dalla fase di costruzione
 COPY --from=build /app/target/bugboard_backend-0.0.1-SNAPSHOT.jar app.jar
 
-# Expose the port
+# Espone la porta
 EXPOSE 8080
 
-# Run the jar
+# Esegue il jar
 ENTRYPOINT ["java", "-jar", "app.jar"]

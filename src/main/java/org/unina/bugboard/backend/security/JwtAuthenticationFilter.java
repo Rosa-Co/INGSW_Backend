@@ -16,7 +16,11 @@ import org.unina.bugboard.backend.service.impl.UserDetailsServiceImpl;
 
 import java.io.IOException;
 
-// ! filtro che intercetta ogni richiesta per validare il JWT
+/**
+ * Filtro che intercetta ogni richiesta HTTP per validare il token JWT.
+ * Estende OncePerRequestFilter per garantire una singola esecuzione per
+ * richiesta.
+ */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -30,7 +34,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         this.userDetailsService = userDetailsService;
     }
 
-    // ! eseguito per ogni richiesta
+    /**
+     * Logica principale del filtro. Estrae il JWT, lo valida e imposta
+     * l'autenticazione nel contesto di sicurezza.
+     *
+     * @param request     La richiesta HTTP in ingresso.
+     * @param response    La risposta HTTP in uscita.
+     * @param filterChain La catena dei filtri da proseguire.
+     * @throws ServletException Se si verifica un errore nella servlet.
+     * @throws IOException      Se si verifica un errore di input/output.
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
@@ -55,6 +68,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
+    /**
+     * Estrae il token JWT dall'header Authoritzation della richiesta HTTP.
+     *
+     * @param request La richiesta HTTP.
+     * @return Il token JWT se presente e valido, altrimenti null.
+     */
     private String parseJwt(HttpServletRequest request) {
         String headerAuth = request.getHeader("Authorization");
 

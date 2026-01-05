@@ -15,6 +15,11 @@ import org.springframework.stereotype.Component;
 import javax.crypto.SecretKey;
 import java.util.Date;
 
+/**
+ * Utility per la gestione dei token JWT.
+ * Fornisce metodi per generare, validare ed estrarre informazioni dai token
+ * JWT.
+ */
 @Component
 public class JwtUtils {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
@@ -26,10 +31,23 @@ public class JwtUtils {
     @Value("${bugboard.app.jwtExpirationMs}")
     private int jwtExpirationMs;
 
+    /**
+     * Recupera la chiave segreta per firmare i token JWT.
+     * Decodifica la chiave segreta configurata in base64.
+     *
+     * @return La chiave segreta (SecretKey).
+     */
     private SecretKey key() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
 
+    /**
+     * Genera un token JWT per l'utente autenticato.
+     *
+     * @param authentication L'oggetto Authentication contenente i dettagli
+     *                       dell'utente.
+     * @return Una stringa rappresentante il token JWT generato.
+     */
     public String generateJwtToken(Authentication authentication) {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
@@ -41,6 +59,12 @@ public class JwtUtils {
                 .compact();
     }
 
+    /**
+     * Estrae l'username dal token JWT.
+     *
+     * @param token Il token JWT da cui estrarre l'username.
+     * @return L'username (email) contenuto nel token.
+     */
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parser().verifyWith(key()).build()
                 .parseSignedClaims(token)
@@ -48,6 +72,12 @@ public class JwtUtils {
                 .getSubject();
     }
 
+    /**
+     * Valida il token JWT verificandone la firma e la scadenza.
+     *
+     * @param authToken Il token JWT da validare.
+     * @return true se il token è valido, false altrimenti.
+     */
     public boolean validateJwtToken(String authToken) {
         try {
             Jwts.parser().verifyWith(key()).build().parse(authToken);

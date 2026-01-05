@@ -9,6 +9,12 @@ import org.unina.bugboard.backend.model.Utente;
 import org.unina.bugboard.backend.model.enums.Role;
 import org.unina.bugboard.backend.repository.UtenteRepository;
 
+/**
+ * Componente responsabile dell'inizializzazione dei dati all'avvio
+ * dell'applicazione.
+ * In particolare, si occupa di creare un utente amministratore se non ne esiste
+ * già uno.
+ */
 @Component
 public class DataInitializer implements CommandLineRunner {
 
@@ -27,6 +33,16 @@ public class DataInitializer implements CommandLineRunner {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     * Metodo eseguito all'avvio dell'applicazione.
+     * Controlla se esiste un utente con l'email amministratore specificata nella
+     * configurazione.
+     * Se non esiste, crea un nuovo utente con ruolo ADMIN e la password
+     * specificata.
+     *
+     * @param args argomenti della riga di comando (non utilizzati)
+     * @throws Exception se si verifica un errore durante l'esecuzione
+     */
     @Override
     public void run(String... args) throws Exception {
         if (utenteRepository.findByEmail(adminEmail).isEmpty()) {

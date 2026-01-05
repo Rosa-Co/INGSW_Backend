@@ -10,6 +10,10 @@ import org.unina.bugboard.backend.model.Utente;
 import org.unina.bugboard.backend.repository.UtenteRepository;
 import org.unina.bugboard.backend.security.UserDetailsImpl;
 
+/**
+ * Implementazione del servizio UserDetailsService di Spring Security.
+ * Gestisce il caricamento dei dettagli dell'utente per l'autenticazione.
+ */
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
@@ -20,6 +24,15 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         this.utenteRepository = utenteRepository;
     }
 
+    /**
+     * Carica i dettagli dell'utente basandosi sull'username (email).
+     * Utilizzato da Spring Security durante il processo di autenticazione.
+     *
+     * @param email L'email dell'utente da caricare.
+     * @return Un oggetto UserDetails contenente le informazioni dell'utente.
+     * @throws UsernameNotFoundException Se l'utente non viene trovato con l'email
+     *                                   fornita.
+     */
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
