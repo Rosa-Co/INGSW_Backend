@@ -14,17 +14,17 @@ import java.util.List;
 @RequestMapping("/api/issues")
 public interface IssueApi {
 
-    @GetMapping
-    List<IssueDTO> getAllIssues(@RequestParam(required = false) IssueType tipologia,
-            @RequestParam(required = false) IssueStatus stato,
-            @RequestParam(required = false) IssuePriority priorita,
-            @RequestParam(required = false, defaultValue = "id") String sortBy,
-            @RequestParam(required = false, defaultValue = "ASC") String sortDir);
+        @GetMapping
+        List<IssueDTO> getAllIssues(@RequestParam(required = false) IssueType tipologia,
+                        @RequestParam(required = false) IssueStatus stato,
+                        @RequestParam(required = false) IssuePriority priorita,
+                        @RequestParam(required = false, defaultValue = "id") String sortBy,
+                        @RequestParam(required = false, defaultValue = "ASC") String sortDir);
 
-    @GetMapping("/{id}")
-    ResponseEntity<IssueDTO> getIssueById(@PathVariable Integer id);
+        @GetMapping("/{id}")
+        ResponseEntity<IssueDTO> getIssueById(@PathVariable Integer id);
 
-    @PostMapping
-    ResponseEntity<IssueDTO> createIssue(@Valid @RequestBody IssueRequest issueRequest);
+        @PostMapping
+        ResponseEntity<IssueDTO> createIssue(@Valid @RequestBody IssueRequest issueRequest);
 
 }

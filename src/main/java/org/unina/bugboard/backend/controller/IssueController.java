@@ -24,52 +24,53 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class IssueController implements IssueApi {
 
-    private final IssueService issueService;
-    private final UtenteService utenteService;
-    private final IssueMapper issueMapper;
+        private final IssueService issueService;
+        private final UtenteService utenteService;
+        private final IssueMapper issueMapper;
 
-    @Autowired
-    public IssueController(IssueService issueService, UtenteService utenteService, IssueMapper issueMapper) {
-        this.issueService = issueService;
-        this.utenteService = utenteService;
-        this.issueMapper = issueMapper;
-    }
+        @Autowired
+        public IssueController(IssueService issueService, UtenteService utenteService, IssueMapper issueMapper) {
+                this.issueService = issueService;
+                this.utenteService = utenteService;
+                this.issueMapper = issueMapper;
+        }
 
-    @Override
-    public List<IssueDTO> getAllIssues(IssueType tipologia, IssueStatus stato, IssuePriority priorita, String sortBy,
-            String sortDir) {
-        return issueService.getAllIssues(tipologia, stato, priorita, sortBy, sortDir).stream()
-                .map(issueMapper::toDTO)
-                .toList();
-    }
+        @Override
+        public List<IssueDTO> getAllIssues(IssueType tipologia, IssueStatus stato, IssuePriority priorita,
+                        String sortBy,
+                        String sortDir) {
+                return issueService.getAllIssues(tipologia, stato, priorita, sortBy, sortDir).stream()
+                                .map(issueMapper::toDTO)
+                                .toList();
+        }
 
-    @Override
-    public ResponseEntity<IssueDTO> getIssueById(Integer id) {
-        return issueService.getIssueById(id)
-                .map(issueMapper::toDTO)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
-    }
+        @Override
+        public ResponseEntity<IssueDTO> getIssueById(Integer id) {
+                return issueService.getIssueById(id)
+                                .map(issueMapper::toDTO)
+                                .map(ResponseEntity::ok)
+                                .orElse(ResponseEntity.notFound().build());
+        }
 
-    @Override
-    public ResponseEntity<IssueDTO> createIssue(IssueRequest issueRequest) {
-        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
-                .getPrincipal();
-        Utente currentUser = utenteService.getUserByEmail(userDetails.getEmail())
-                .orElseThrow(() -> new RuntimeException("Authenticated user not found"));
+        @Override
+        public ResponseEntity<IssueDTO> createIssue(IssueRequest issueRequest) {
+                UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
+                                .getPrincipal();
+                Utente currentUser = utenteService.getUserByEmail(userDetails.getEmail())
+                                .orElseThrow(() -> new RuntimeException("Authenticated user not found"));
 
-        Issue issue = Issue.builder()
-                .titolo(issueRequest.getTitolo())
-                .descrizione(issueRequest.getDescrizione())
-                .tipologia(issueRequest.getTipologia())
-                .img(issueRequest.getImg())
-                .priorita(issueRequest.getPriorita())
-                .stato(IssueStatus.TODO)
-                .creataDa(currentUser)
-                .build();
+                Issue issue = Issue.builder()
+                                .titolo(issueRequest.getTitolo())
+                                .descrizione(issueRequest.getDescrizione())
+                                .tipologia(issueRequest.getTipologia())
+                                .img(issueRequest.getImg())
+                                .priorita(issueRequest.getPriorita())
+                                .stato(IssueStatus.TODO)
+                                .creataDa(currentUser)
+                                .build();
 
-        Issue created = issueService.createIssue(issue);
-        return ResponseEntity.ok(issueMapper.toDTO(created));
-    }
+                Issue created = issueService.createIssue(issue);
+                return ResponseEntity.ok(issueMapper.toDTO(created));
+        }
 
 }
