@@ -71,7 +71,13 @@ public class IssueServiceImpl implements IssueService {
             Files.createDirectories(uploadPath);
         }
 
-        String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+        String originalFilename = file.getOriginalFilename();
+        String extension = "";
+        if (originalFilename != null && originalFilename.contains(".")) {
+            extension = originalFilename.substring(originalFilename.lastIndexOf("."));
+        }
+
+        String fileName = UUID.randomUUID().toString() + extension;
         Path filePath = uploadPath.resolve(fileName);
 
         Files.copy(file.getInputStream(), filePath);
