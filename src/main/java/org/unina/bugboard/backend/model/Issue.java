@@ -1,12 +1,7 @@
 package org.unina.bugboard.backend.model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.unina.bugboard.backend.model.enums.IssuePriority;
 import org.unina.bugboard.backend.model.enums.IssueStatus;
 import org.unina.bugboard.backend.model.enums.IssueType;

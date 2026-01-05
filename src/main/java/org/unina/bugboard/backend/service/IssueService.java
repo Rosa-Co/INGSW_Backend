@@ -1,11 +1,11 @@
 package org.unina.bugboard.backend.service;
 
+import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 import org.unina.bugboard.backend.model.Issue;
 import org.unina.bugboard.backend.model.enums.IssuePriority;
 import org.unina.bugboard.backend.model.enums.IssueStatus;
 import org.unina.bugboard.backend.model.enums.IssueType;
-import org.springframework.core.io.Resource;
 
 import java.util.List;
 import java.util.Optional;

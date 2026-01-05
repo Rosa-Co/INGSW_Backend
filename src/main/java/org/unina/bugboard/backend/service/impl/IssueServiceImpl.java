@@ -1,6 +1,8 @@
 package org.unina.bugboard.backend.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,8 +12,6 @@ import org.unina.bugboard.backend.model.enums.IssueStatus;
 import org.unina.bugboard.backend.model.enums.IssueType;
 import org.unina.bugboard.backend.repository.IssueRepository;
 import org.unina.bugboard.backend.service.IssueService;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
