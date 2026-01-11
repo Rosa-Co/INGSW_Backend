@@ -1,0 +1,14 @@
+org.unina.bugboard.backend
+org.unina.bugboard.backend.api
+org.unina.bugboard.backend.config
+org.unina.bugboard.backend.controller
+org.unina.bugboard.backend.dto
+org.unina.bugboard.backend.exception
+org.unina.bugboard.backend.loader
+org.unina.bugboard.backend.mapper
+org.unina.bugboard.backend.model
+org.unina.bugboard.backend.model.enums
+org.unina.bugboard.backend.repository
+org.unina.bugboard.backend.security
+org.unina.bugboard.backend.service
+org.unina.bugboard.backend.service.impl
