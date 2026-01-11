@@ -1,9 +1,11 @@
 package org.unina.bugboard.backend.service;
 
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.multipart.MultipartFile;
 import org.unina.bugboard.backend.model.Issue;
 import org.unina.bugboard.backend.model.enums.IssuePriority;
+import org.unina.bugboard.backend.model.enums.IssueSortField;
 import org.unina.bugboard.backend.model.enums.IssueStatus;
 import org.unina.bugboard.backend.model.enums.IssueType;
 
@@ -58,8 +60,8 @@ public interface IssueService {
          * @param sortDir   La direzione dell'ordinamento (es. "asc", "desc").
          * @return Una lista di segnalazioni filtrate e ordinate.
          */
-        List<Issue> getAllIssues(IssueType tipologia, IssueStatus stato, IssuePriority priorita, String sortBy,
-                        String sortDir);
+        List<Issue> getAllIssues(IssueType tipologia, IssueStatus stato, IssuePriority priorita, IssueSortField sortBy,
+                                 Sort.Direction sortDir);
 
         /**
          * Carica un'immagine associata a una segnalazione.

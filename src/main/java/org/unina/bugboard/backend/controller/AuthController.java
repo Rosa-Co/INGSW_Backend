@@ -60,7 +60,6 @@ public class AuthController implements AuthApi {
                                 .map(GrantedAuthority::getAuthority)
                                 .toList();
 
-                // ? good
                 return ResponseEntity.ok(
                                 new LoginResponse(
                                                 jwt,

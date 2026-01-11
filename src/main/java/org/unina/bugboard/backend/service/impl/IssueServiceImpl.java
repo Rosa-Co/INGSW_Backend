@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.unina.bugboard.backend.model.Issue;
 import org.unina.bugboard.backend.model.enums.IssuePriority;
+import org.unina.bugboard.backend.model.enums.IssueSortField;
 import org.unina.bugboard.backend.model.enums.IssueStatus;
 import org.unina.bugboard.backend.model.enums.IssueType;
 import org.unina.bugboard.backend.repository.IssueRepository;
@@ -53,9 +54,9 @@ public class IssueServiceImpl implements IssueService {
     }
 
     @Override
-    public List<Issue> getAllIssues(IssueType tipologia, IssueStatus stato, IssuePriority priorita, String sortBy,
-            String sortDir) {
-        Sort sort = Sort.by(Sort.Direction.fromString(sortDir), sortBy);
+    public List<Issue> getAllIssues(IssueType tipologia, IssueStatus stato, IssuePriority priorita, IssueSortField sortBy,
+            Sort.Direction sortDir) {
+        Sort sort = Sort.by(sortDir, sortBy.name());
         return issueRepository.findIssuesWithFilters(tipologia, stato, priorita, sort);
     }
 
