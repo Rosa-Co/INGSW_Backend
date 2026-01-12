@@ -61,7 +61,11 @@ public class IssueController implements IssueApi {
         public List<IssueDTO> getAllIssues(IssueType tipologia, IssueStatus stato, IssuePriority priorita,
                                            IssueSortField sortBy,
                                            Sort.Direction sortDir) {
-                return issueService.getAllIssues(tipologia, stato, priorita, sortBy, sortDir).stream()
+
+            sortBy = sortBy != null ? sortBy : IssueSortField.tipologia;
+            sortDir = sortDir != null ? sortDir : Sort.Direction.ASC;
+
+            return issueService.getAllIssues(tipologia, stato, priorita, sortBy, sortDir).stream()
                                 .map(issueMapper::toDTO)
                                 .toList();
         }

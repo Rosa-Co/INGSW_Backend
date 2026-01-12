@@ -34,7 +34,7 @@ public interface IssueApi {
                         @RequestParam(required = false) IssueStatus stato,
                         @RequestParam(required = false) IssuePriority priorita,
                         @RequestParam(required = false) IssueSortField sortBy,
-                        @RequestParam(required = false, defaultValue = "ASC") Sort.Direction sortDir);
+                        @RequestParam(required = false) Sort.Direction sortDir);
 
         /**
          * Recupera una issue per ID.

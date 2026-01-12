@@ -6,6 +6,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -65,6 +66,30 @@ public class GlobalExceptionHandler {
         Map<String, String> error = new HashMap<>();
         error.put(ERROR, "I/O Error: " + ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    /**
+     * Gestisce errori di binding dei parametri di richiesta
+     * (es. enum non validi nei @RequestParam).
+     *
+     * Caso tipico:
+     *  /api/issues?tipologia=NOT_A_TYPE
+     */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<Map<String, Object>> handleEnumBindingError(
+            MethodArgumentTypeMismatchException ex) {
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("error", "Invalid request parameter");
+        body.put("parameter", ex.getName());
+        body.put("value", ex.getValue());
+        body.put("expectedType", ex.getRequiredType() != null
+                ? ex.getRequiredType().getSimpleName()
+                : "unknown");
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(body);
     }
 
     /**
