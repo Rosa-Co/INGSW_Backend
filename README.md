@@ -1,3 +1,4 @@
+N.B: Al seguente link https://rosa-co.github.io/INGSW_Backend/ è possibile visionare la documentazione Javadoc del progetto.
 Questo è il backend per l'applicazione **BugBoard**, sviluppato come progetto per il corso di Ingegneria del Software.
 Il sistema gestisce la logica lato server, le API REST e la persistenza dei dati per la piattaforma di gestione bug/ticket.
 
