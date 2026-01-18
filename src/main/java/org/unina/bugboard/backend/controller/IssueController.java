@@ -62,7 +62,7 @@ public class IssueController implements IssueApi {
                                            IssueSortField sortBy,
                                            Sort.Direction sortDir) {
 
-            sortBy = sortBy != null ? sortBy : IssueSortField.tipologia;
+            sortBy = sortBy != null ? sortBy : IssueSortField.TIPOLOGIA;
             sortDir = sortDir != null ? sortDir : Sort.Direction.ASC;
 
             return issueService.getAllIssues(tipologia, stato, priorita, sortBy, sortDir).stream()

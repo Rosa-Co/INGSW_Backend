@@ -80,7 +80,7 @@ public class GlobalExceptionHandler {
             MethodArgumentTypeMismatchException ex) {
 
         Map<String, Object> body = new HashMap<>();
-        body.put("error", "Invalid request parameter");
+        body.put(ERROR, "Invalid request parameter");
         body.put("parameter", ex.getName());
         body.put("value", ex.getValue());
         body.put("expectedType", ex.getRequiredType() != null

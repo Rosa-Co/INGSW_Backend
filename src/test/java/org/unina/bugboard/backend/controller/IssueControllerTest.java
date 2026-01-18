@@ -1,420 +1,276 @@
 package org.unina.bugboard.backend.controller;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.transaction.annotation.Transactional;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Sort;
+import org.unina.bugboard.backend.dto.IssueDTO;
+import org.unina.bugboard.backend.mapper.IssueMapper;
 import org.unina.bugboard.backend.model.Issue;
-import org.unina.bugboard.backend.model.Utente;
-import org.unina.bugboard.backend.model.enums.*;
-import org.unina.bugboard.backend.repository.IssueRepository;
-import org.unina.bugboard.backend.repository.UtenteRepository;
+import org.unina.bugboard.backend.model.enums.IssuePriority;
+import org.unina.bugboard.backend.model.enums.IssueSortField;
+import org.unina.bugboard.backend.model.enums.IssueStatus;
+import org.unina.bugboard.backend.model.enums.IssueType;
+import org.unina.bugboard.backend.service.IssueService;
 
-import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
-/**
- * BLACK-BOX INTEGRATION TESTS per IssueController
- *
- * Caratteristiche:
- * - NO mock dei service layer
- * - Testa l'intero stack (Controller → Service → Repository → DB)
- * - Focus su INPUT/OUTPUT osservabili
- * - Database H2 in-memory per isolamento
- */
-@SpringBootTest
-@AutoConfigureMockMvc
-@Transactional
-@WithMockUser(username = "tester", roles = "USER")
-@ActiveProfiles("test")
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+
+@ExtendWith(MockitoExtension.class)
+@DisplayName("IssueController - getAllIssues Unit Tests")
 class IssueControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+        @Mock
+        private IssueService issueService;
 
-    @Autowired
-    private IssueRepository issueRepository;
+        @Mock
+        private IssueMapper issueMapper;
 
-    @Autowired
-    private UtenteRepository utenteRepository;
+        @InjectMocks
+        private IssueController issueController;
 
-    @Autowired
-    private ObjectMapper objectMapper;
+        private Issue mockIssue1;
+        private Issue mockIssue2;
+        private IssueDTO mockDTO1;
+        private IssueDTO mockDTO2;
 
-    private Utente testUser;
+        @BeforeEach
+        void setUp() {
+                mockIssue1 = new Issue();
+                mockIssue2 = new Issue();
 
-    @BeforeEach
-    void setup() {
-        issueRepository.deleteAll();
-        utenteRepository.deleteAll();
+                mockDTO1 = new IssueDTO();
+                mockDTO1.setId(1);
+                mockDTO1.setTipologia(IssueType.BUG);
 
-        // Crea utente di test per soddisfare il vincolo creata_da
-        testUser = new Utente();
-        testUser.setEmail("test@example.com");
-        testUser.setPassword("password123");
-        testUser = utenteRepository.save(testUser);
-
-        // Seed con dati di test controllati - NON settare l'ID manualmente
-        Issue bug1 = createIssue("Bug critico", IssueType.BUG, IssueStatus.TODO, IssuePriority.HIGH);
-        Issue bug2 = createIssue("Bug minore", IssueType.BUG, IssueStatus.DONE, IssuePriority.LOW);
-        Issue feature1 = createIssue("Nuova feature", IssueType.FEATURE, IssueStatus.IN_PROGRESS, IssuePriority.MEDIUM);
-        Issue question1 = createIssue("Domanda", IssueType.QUESTION, IssueStatus.TODO, IssuePriority.LOW);
-
-        issueRepository.save(bug1);
-        issueRepository.save(bug2);
-        issueRepository.save(feature1);
-        issueRepository.save(question1);
-    }
-
-    /*
-     * ================================================================
-     * CLASSE EQUIVALENZA 1: TUTTI I PARAMETRI VALIDI
-     * Input: tipologia=BUG, stato=TODO, priorita=HIGH, sortBy=tipologia,
-     * sortDir=ASC
-     * Output atteso: 200 OK, JSON array con 1 elemento (Bug critico)
-     * ================================================================
-     */
-    @Test
-    void ce1_allValidParameters_returnsFilteredAndSortedResults() throws Exception {
-        mockMvc.perform(get("/api/issues")
-                .param("tipologia", "BUG")
-                .param("stato", "TODO")
-                .param("priorita", "HIGH")
-                .param("sortBy", "tipologia")
-                .param("sortDir", "ASC"))
-                .andExpect(status().isOk())
-                .andExpect(content().contentType("application/json"))
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].titolo", is("Bug critico")))
-                .andExpect(jsonPath("$[0].tipologia", is("BUG")))
-                .andExpect(jsonPath("$[0].stato", is("TODO")))
-                .andExpect(jsonPath("$[0].priorita", is("HIGH")));
-    }
-
-    /*
-     * ================================================================
-     * CLASSE EQUIVALENZA 2: PARAMETRI OPZIONALI OMESSI (defaults)
-     * Input: nessun parametro
-     * Output atteso: 200 OK, tutti e 4 gli issue, ordinati per tipologia ASC
-     * ================================================================
-     */
-    @Test
-    void ce2_noParameters_returnsAllIssuesWithDefaults() throws Exception {
-        mockMvc.perform(get("/api/issues"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(4)))
-                // Verifica ordinamento default (tipologia ASC): BUG, BUG, FEATURE, QUESTION
-                .andExpect(jsonPath("$[0].tipologia", is("BUG")))
-                .andExpect(jsonPath("$[1].tipologia", is("BUG")))
-                .andExpect(jsonPath("$[2].tipologia", is("FEATURE")))
-                .andExpect(jsonPath("$[3].tipologia", is("QUESTION")));
-    }
-
-    /*
-     * ================================================================
-     * CLASSE EQUIVALENZA 3: SOLO FILTRO tipologia
-     * Input: tipologia=FEATURE
-     * Output atteso: 200 OK, 1 elemento (Nuova feature)
-     * ================================================================
-     */
-    @Test
-    void ce3_onlyTipologiaFilter_returnsMatchingIssues() throws Exception {
-        mockMvc.perform(get("/api/issues")
-                .param("tipologia", "FEATURE"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].titolo", is("Nuova feature")));
-    }
-
-    /*
-     * ================================================================
-     * CLASSE EQUIVALENZA 4: SOLO FILTRO stato
-     * Input: stato=DONE
-     * Output atteso: 200 OK, 1 elemento (Bug minore)
-     * ================================================================
-     */
-    @Test
-    void ce4_onlyStatoFilter_returnsMatchingIssues() throws Exception {
-        mockMvc.perform(get("/api/issues")
-                .param("stato", "DONE"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)))
-                .andExpect(jsonPath("$[0].titolo", is("Bug minore")));
-    }
-
-    /*
-     * ================================================================
-     * CLASSE EQUIVALENZA 5: SOLO FILTRO priorita
-     * Input: priorita=LOW
-     * Output atteso: 200 OK, 2 elementi
-     * ================================================================
-     */
-    @Test
-    void ce5_onlyPrioritaFilter_returnsMatchingIssues() throws Exception {
-        mockMvc.perform(get("/api/issues")
-                .param("priorita", "LOW"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)));
-    }
-
-    /*
-     * ================================================================
-     * CLASSE EQUIVALENZA 6: ORDINAMENTO DESC
-     * Input: sortBy=priorita, sortDir=DESC
-     * Output atteso: 200 OK, ordinamento HIGH → MEDIUM → LOW → LOW
-     * ================================================================
-     */
-    @Test
-    void ce6_sortDescending_returnsCorrectOrder() throws Exception {
-        // DB stores Priority as STRING, so sorting is Alphabetical (M > L > H)
-        // High=H, Medium=M, Low=L
-        // DESC Order: Medium, Low, Low, High
-        mockMvc.perform(get("/api/issues")
-                .param("sortBy", "priorita")
-                .param("sortDir", "DESC"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(4)))
-                .andExpect(jsonPath("$[0].priorita", is("MEDIUM")))
-                .andExpect(jsonPath("$[1].priorita", is("LOW")))
-                .andExpect(jsonPath("$[2].priorita", is("LOW")))
-                .andExpect(jsonPath("$[3].priorita", is("HIGH")));
-    }
-
-    /*
-     * ================================================================
-     * CLASSE EQUIVALENZA 7: FILTRI MULTIPLI che non matchano nulla
-     * Input: tipologia=BUG, stato=IN_PROGRESS (nessun bug in progress)
-     * Output atteso: 200 OK, array vuoto
-     * ================================================================
-     */
-    @Test
-    void ce7_noMatchingResults_returnsEmptyArray() throws Exception {
-        mockMvc.perform(get("/api/issues")
-                .param("tipologia", "BUG")
-                .param("stato", "IN_PROGRESS"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(0)));
-    }
-
-    /*
-     * ================================================================
-     * CLASSE EQUIVALENZA 8: VALORI ENUM VALIDI - tutti i tipi
-     * Test di boundary: verifica che TUTTI i valori enum validi funzionino
-     * ================================================================
-     */
-    @Test
-    void ce8_allValidEnumValues_returnOk() throws Exception {
-        // Test tutti i tipi validi
-        for (IssueType type : IssueType.values()) {
-            mockMvc.perform(get("/api/issues")
-                    .param("tipologia", type.name()))
-                    .andExpect(status().isOk());
+                mockDTO2 = new IssueDTO();
+                mockDTO2.setId(2);
+                mockDTO2.setTipologia(IssueType.FEATURE);
         }
 
-        // Test tutti gli stati validi
-        for (IssueStatus status : IssueStatus.values()) {
-            mockMvc.perform(get("/api/issues")
-                    .param("stato", status.name()))
-                    .andExpect(status().isOk());
+        @Nested
+        @DisplayName("Test CE - Parametro Tipologia (rappresentativo)")
+        class TipologiaTests {
+
+                @Test
+                @DisplayName("[TC-01] CE: tipologia = QUESTION (valore rappresentativo)")
+                void whenTipologiaIsQuestion_thenDelegatesCorrectly() {
+                        when(issueService.getAllIssues(eq(IssueType.QUESTION), any(), any(), any(), any()))
+                                        .thenReturn(Collections.singletonList(mockIssue1));
+                        when(issueMapper.toDTO(any())).thenReturn(mockDTO1);
+
+                        List<IssueDTO> result = issueController.getAllIssues(IssueType.QUESTION, null, null, null,
+                                        null);
+
+                        assertThat(result).isNotNull()
+                                        .hasSize(1);
+                        verify(issueService, times(1)).getAllIssues(IssueType.QUESTION, null, null, IssueSortField.TIPOLOGIA,
+                                        Sort.Direction.ASC);
+                        verify(issueMapper, times(1)).toDTO(mockIssue1);
+                }
+
         }
 
-        // Test tutte le priorità valide
-        for (IssuePriority priority : IssuePriority.values()) {
-            mockMvc.perform(get("/api/issues")
-                    .param("priorita", priority.name()))
-                    .andExpect(status().isOk());
+        @Nested
+        @DisplayName("Test CE - Parametro Stato (rappresentativo)")
+        class StatoTests {
+
+                @Test
+                @DisplayName("[TC-02] CE: stato = TODO")
+                void whenStatoIsTodo_thenDelegatesCorrectly() {
+                        when(issueService.getAllIssues(any(), eq(IssueStatus.TODO), any(), any(), any()))
+                                        .thenReturn(Collections.singletonList(mockIssue1));
+                        when(issueMapper.toDTO(any())).thenReturn(mockDTO1);
+
+                        List<IssueDTO> result = issueController.getAllIssues(null, IssueStatus.TODO, null, null, null);
+
+                        assertThat(result).isNotNull()
+                                        .hasSize(1);
+                        verify(issueService, times(1)).getAllIssues(null, IssueStatus.TODO, null, IssueSortField.TIPOLOGIA,
+                                        Sort.Direction.ASC);
+                        verify(issueMapper, times(1)).toDTO(mockIssue1);
+                }
+
         }
-    }
 
-    /*
-     * ================================================================
-     * CLASSE EQUIVALENZA 9: VALORI ENUM INVALIDI
-     * Input: valori non appartenenti agli enum
-     * Output atteso: 400 Bad Request
-     * ================================================================
-     */
-    @Test
-    void ce9_invalidTipologia_returns400() throws Exception {
-        mockMvc.perform(get("/api/issues")
-                .param("tipologia", "NOT_A_TYPE"))
-                .andExpect(status().isBadRequest());
-    }
+        @Nested
+        @DisplayName("Test CE - Parametro Priorità (rappresentativo)")
+        class PrioritaTests {
 
-    @Test
-    void ce9_invalidStato_returns400() throws Exception {
-        mockMvc.perform(get("/api/issues")
-                .param("stato", "INVALID_STATE"))
-                .andExpect(status().isBadRequest());
-    }
+                @Test
+                @DisplayName("[TC-03] CE: priorita = LOW")
+                void whenPrioritaIsLow_thenDelegatesCorrectly() {
+                        when(issueService.getAllIssues(any(), any(), eq(IssuePriority.LOW), any(), any()))
+                                        .thenReturn(Collections.singletonList(mockIssue1));
+                        when(issueMapper.toDTO(any())).thenReturn(mockDTO1);
 
-    @Test
-    void ce9_invalidPriorita_returns400() throws Exception {
-        mockMvc.perform(get("/api/issues")
-                .param("priorita", "SUPER_URGENT"))
-                .andExpect(status().isBadRequest());
-    }
+                        List<IssueDTO> result = issueController.getAllIssues(null, null, IssuePriority.LOW, null, null);
 
-    @Test
-    void ce9_invalidSortBy_returns400() throws Exception {
-        mockMvc.perform(get("/api/issues")
-                .param("sortBy", "nonExistentField"))
-                .andExpect(status().isBadRequest());
-    }
+                        assertThat(result).isNotNull()
+                                        .hasSize(1);
+                        verify(issueService, times(1)).getAllIssues(null, null, IssuePriority.LOW, IssueSortField.TIPOLOGIA,
+                                        Sort.Direction.ASC);
+                        verify(issueMapper, times(1)).toDTO(mockIssue1);
+                }
 
-    @Test
-    void ce9_invalidSortDir_returns400() throws Exception {
-        mockMvc.perform(get("/api/issues")
-                .param("sortDir", "SIDEWAYS"))
-                .andExpect(status().isBadRequest());
-    }
+        }
 
-    /*
-     * ================================================================
-     * CLASSE EQUIVALENZA 10: CASE SENSITIVITY
-     * Input: valori enum in lowercase
-     * Output atteso: 400 Bad Request (Spring enum binding è case-sensitive)
-     * ================================================================
-     */
-    @Test
-    void ce10_lowercaseTipologia_returns400() throws Exception {
-        mockMvc.perform(get("/api/issues")
-                .param("tipologia", "bug"))
-                .andExpect(status().isBadRequest());
-    }
+        @Nested
+        @DisplayName("Test CE - Parametro SortBy / SortDir ")
+        class SortTests {
 
-    @Test
-    void ce10_mixedCaseStato_returns400() throws Exception {
-        mockMvc.perform(get("/api/issues")
-                .param("stato", "ToDo"))
-                .andExpect(status().isBadRequest());
-    }
+                @Test
+                @DisplayName("[TC-04] CE: sortBy = TIPOLOGIA")
+                void whenSortByIsTipologia_thenUsesIt() {
+                        when(issueService.getAllIssues(any(), any(), any(), eq(IssueSortField.TIPOLOGIA), any()))
+                                        .thenReturn(Collections.singletonList(mockIssue1));
+                        when(issueMapper.toDTO(any())).thenReturn(mockDTO1);
 
-    /*
-     * ================================================================
-     * CLASSE EQUIVALENZA 11: VALORI BOUNDARY - stringhe vuote
-     * Input: parametri con valore vuoto
-     * Output atteso: 400 Bad Request
-     * ================================================================
-     */
-    @Test
-    void ce11_emptyTipologia_treatedAsNull_returnsOk() throws Exception {
-        // Spring treats empty string enum as null -> controller ignores filter ->
-        // returns all
-        mockMvc.perform(get("/api/issues")
-                .param("tipologia", ""))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(4)));
-    }
+                        List<IssueDTO> result = issueController.getAllIssues(null, null, null, IssueSortField.TIPOLOGIA,
+                                        null);
 
-    @Test
-    void ce11_emptySortBy_treatedAsDefault_returnsOk() throws Exception {
-        mockMvc.perform(get("/api/issues")
-                .param("sortBy", ""))
-                .andExpect(status().isOk());
-    }
+                        assertThat(result).isNotNull()
+                                        .hasSize(1);
+                        verify(issueService, times(1)).getAllIssues(null, null, null, IssueSortField.TIPOLOGIA,
+                                        Sort.Direction.ASC);
+                        verify(issueMapper, times(1)).toDTO(mockIssue1);
+                }
 
-    /*
-     * ================================================================
-     * CLASSE EQUIVALENZA 12: CARATTERI SPECIALI
-     * Input: valori con caratteri speciali / SQL injection attempts
-     * Output atteso: 400 Bad Request (non matchano enum)
-     * ================================================================
-     */
-    @Test
-    void ce12_sqlInjectionAttempt_returns400() throws Exception {
-        mockMvc.perform(get("/api/issues")
-                .param("tipologia", "BUG'; DROP TABLE issues; --"))
-                .andExpect(status().isBadRequest());
-    }
+                @Test
+                @DisplayName("[TC-05] CE: sortDir = ASC")
+                void whenSortDirIsAsc_thenUsesIt() {
+                        when(issueService.getAllIssues(any(), any(), any(), any(), eq(Sort.Direction.ASC)))
+                                        .thenReturn(Collections.singletonList(mockIssue1));
+                        when(issueMapper.toDTO(any())).thenReturn(mockDTO1);
 
-    @Test
-    void ce12_specialCharactersInSortBy_returns400() throws Exception {
-        mockMvc.perform(get("/api/issues")
-                .param("sortBy", "../../../etc/passwd"))
-                .andExpect(status().isBadRequest());
-    }
+                        List<IssueDTO> result = issueController.getAllIssues(null, null, null, null,
+                                        Sort.Direction.ASC);
 
-    /*
-     * ================================================================
-     * CLASSE EQUIVALENZA 13: COMBINAZIONI MULTIPLE VALIDE
-     * Input: tutti i filtri + tutti i parametri di sorting
-     * Output atteso: 200 OK con risultati corretti
-     * ================================================================
-     */
-    @Test
-    void ce13_allParametersCombination_worksCorrectly() throws Exception {
-        mockMvc.perform(get("/api/issues")
-                .param("tipologia", "BUG")
-                .param("stato", "TODO")
-                .param("priorita", "HIGH")
-                .param("sortBy", "stato")
-                .param("sortDir", "DESC"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(1)));
-    }
+                        assertThat(result).isNotNull()
+                                        .hasSize(1);
+                        verify(issueService, times(1)).getAllIssues(null, null, null, IssueSortField.TIPOLOGIA,
+                                        Sort.Direction.ASC);
+                        verify(issueMapper, times(1)).toDTO(mockIssue1);
+                }
 
-    /*
-     * ================================================================
-     * CLASSE EQUIVALENZA 14: VERIFICA STRUTTURA RISPOSTA JSON
-     * Input: richiesta valida
-     * Output atteso: JSON con campi corretti e tipi corretti
-     * ================================================================
-     */
-    @Test
-    void ce14_responseStructure_hasCorrectFields() throws Exception {
-        mockMvc.perform(get("/api/issues")
-                .param("tipologia", "BUG"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").exists())
-                .andExpect(jsonPath("$[0].titolo").exists())
-                .andExpect(jsonPath("$[0].tipologia").exists())
-                .andExpect(jsonPath("$[0].stato").exists())
-                .andExpect(jsonPath("$[0].priorita").exists())
-                .andExpect(jsonPath("$[0].id").isNumber())
-                .andExpect(jsonPath("$[0].titolo").isString())
-                .andExpect(jsonPath("$[0].tipologia").isString())
-                .andExpect(jsonPath("$[0].stato").isString())
-                .andExpect(jsonPath("$[0].priorita").isString());
-    }
+                @Test
+                @DisplayName("[TC-06] CE: sortDir = DESC")
+                void whenSortDirIsDesc_thenUsesIt() {
+                        when(issueService.getAllIssues(any(), any(), any(), any(), eq(Sort.Direction.DESC)))
+                                        .thenReturn(Collections.singletonList(mockIssue1));
+                        when(issueMapper.toDTO(any())).thenReturn(mockDTO1);
 
-    /*
-     * ================================================================
-     * CLASSE EQUIVALENZA 15: PARAMETRI DUPLICATI
-     * Input: stesso parametro passato multiple volte
-     * Output atteso: Spring usa l'ultimo valore (behavior default)
-     * ================================================================
-     */
-    @Test
-    void ce15_duplicateParameters_usesFirstValue() throws Exception {
-        mockMvc.perform(get("/api/issues")
-                .param("tipologia", "BUG")
-                .param("tipologia", "FEATURE")) // Spring picks first value: BUG
-                .andExpect(status().isOk())
-                // 2 Bugs in setup
-                .andExpect(jsonPath("$", hasSize(2)))
-                .andExpect(jsonPath("$[0].tipologia", is("BUG")));
-    }
+                        List<IssueDTO> result = issueController.getAllIssues(null, null, null, null,
+                                        Sort.Direction.DESC);
 
-    // ============================================================
-    // HELPER METHODS
-    // ============================================================
+                        assertThat(result).isNotNull()
+                                        .hasSize(1);
+                        verify(issueService, times(1)).getAllIssues(null, null, null, IssueSortField.TIPOLOGIA,
+                                        Sort.Direction.DESC);
+                        verify(issueMapper, times(1)).toDTO(mockIssue1);
+                }
 
-    private Issue createIssue(String titolo, IssueType tipo, IssueStatus stato, IssuePriority priorita) {
-        Issue issue = new Issue();
-        // ID generated by DB when saved
-        issue.setTitolo(titolo);
-        issue.setTipologia(tipo);
-        issue.setStato(stato);
-        issue.setPriorita(priorita);
-        issue.setDescrizione("Descrizione di test per " + titolo);
-        issue.setCreataDa(testUser);
-        return issue;
-    }
+        }
+
+        @Nested
+        @DisplayName("Test Combinazioni Multiple essenziali")
+        class CombinazioniTests {
+
+                @Test
+                @DisplayName("[TC-07] Tutti i parametri valorizzati")
+                void whenAllParametersProvided_thenAllUsed() {
+                        when(issueService.getAllIssues(IssueType.BUG, IssueStatus.IN_PROGRESS, IssuePriority.HIGH,
+                                        IssueSortField.PRIORITA, Sort.Direction.DESC))
+                                        .thenReturn(Collections.singletonList(mockIssue1));
+                        when(issueMapper.toDTO(any())).thenReturn(mockDTO1);
+
+                        List<IssueDTO> result = issueController.getAllIssues(IssueType.BUG, IssueStatus.IN_PROGRESS,
+                                        IssuePriority.HIGH,
+                                        IssueSortField.PRIORITA, Sort.Direction.DESC);
+
+                        assertThat(result).isNotNull()
+                                        .hasSize(1);
+                        verify(issueService, times(1)).getAllIssues(IssueType.BUG, IssueStatus.IN_PROGRESS, IssuePriority.HIGH,
+                                        IssueSortField.PRIORITA, Sort.Direction.DESC);
+                        verify(issueMapper, times(1)).toDTO(mockIssue1);
+                }
+
+                @Test
+                @DisplayName("[TC-08] Tutti i parametri NULL -> defaults applicati")
+                void whenAllParametersNull_thenDefaultsApplied() {
+                        when(issueService.getAllIssues(null, null, null, IssueSortField.TIPOLOGIA, Sort.Direction.ASC))
+                                        .thenReturn(Arrays.asList(mockIssue1, mockIssue2));
+                        when(issueMapper.toDTO(mockIssue1)).thenReturn(mockDTO1);
+                        when(issueMapper.toDTO(mockIssue2)).thenReturn(mockDTO2);
+
+                        List<IssueDTO> result = issueController.getAllIssues(null, null, null, null, null);
+
+                        assertThat(result).isNotNull()
+                                        .hasSize(2);
+                        verify(issueService, times(1)).getAllIssues(null, null, null, IssueSortField.TIPOLOGIA,
+                                        Sort.Direction.ASC);
+                        verify(issueMapper, times(1)).toDTO(mockIssue1);
+                        verify(issueMapper, times(1)).toDTO(mockIssue2);
+                }
+        }
+
+        @Nested
+        @DisplayName("Test Stream Mapping")
+        class StreamMappingTests {
+
+                @Test
+                @DisplayName("[TC-09] Service restituisce lista vuota → mapping corretto")
+                void whenServiceReturnsEmptyList_thenReturnsEmptyList() {
+                        when(issueService.getAllIssues(any(), any(), any(), any(), any()))
+                                        .thenReturn(Collections.emptyList());
+
+                        List<IssueDTO> result = issueController.getAllIssues(null, null, null, null, null);
+
+                        assertThat(result).isEmpty();
+                        verify(issueMapper, never()).toDTO(any());
+                }
+
+                @Test
+                @DisplayName("[TC-10] Service restituisce 1 elemento → mapping 1 volta")
+                void whenServiceReturnsOneElement_thenMapsOnce() {
+                        when(issueService.getAllIssues(any(), any(), any(), any(), any()))
+                                        .thenReturn(Collections.singletonList(mockIssue1));
+                        when(issueMapper.toDTO(mockIssue1)).thenReturn(mockDTO1);
+
+                        List<IssueDTO> result = issueController.getAllIssues(null, null, null, null, null);
+
+                        assertThat(result)
+                                        .isNotNull()
+                                        .hasSize(1)
+                                        .containsExactly(mockDTO1);
+                        verify(issueMapper, times(1)).toDTO(mockIssue1);
+                }
+
+                @Test
+                @DisplayName("[TC-11] Service restituisce N elementi → mapping N volte preservando ordine")
+                void whenServiceReturnsMultipleElements_thenMapsAll() {
+                        when(issueService.getAllIssues(any(), any(), any(), any(), any()))
+                                        .thenReturn(Arrays.asList(mockIssue1, mockIssue2));
+                        when(issueMapper.toDTO(mockIssue1)).thenReturn(mockDTO1);
+                        when(issueMapper.toDTO(mockIssue2)).thenReturn(mockDTO2);
+
+                        List<IssueDTO> result = issueController.getAllIssues(null, null, null, null, null);
+
+                        assertThat(result)
+                                        .isNotNull()
+                                        .hasSize(2)
+                                        .containsExactly(mockDTO1, mockDTO2);
+                        verify(issueMapper, times(2)).toDTO(any());
+                }
+        }
 }

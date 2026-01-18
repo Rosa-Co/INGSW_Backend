@@ -56,7 +56,7 @@ public class IssueServiceImpl implements IssueService {
     @Override
     public List<Issue> getAllIssues(IssueType tipologia, IssueStatus stato, IssuePriority priorita, IssueSortField sortBy,
             Sort.Direction sortDir) {
-        Sort sort = Sort.by(sortDir, sortBy.name());
+        Sort sort = Sort.by(sortDir, sortBy.getFieldName());
         return issueRepository.findIssuesWithFilters(tipologia, stato, priorita, sort);
     }
 
