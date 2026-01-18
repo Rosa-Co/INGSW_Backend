@@ -47,7 +47,7 @@ class IssueServiceTest {
 
     @Test
     @DisplayName("[TC-S01] All Parameters are valued -> Successfully calls Repository")
-    void whenAllParametersAreValued_thenCallsRepositoryWithCorrectParameters() {
+    void whenAllParametersAreValued_thenDelegatesCorrectly() {
         IssueType tipologia = IssueType.QUESTION;
         IssueStatus stato = IssueStatus.TODO;
         IssuePriority priorita = IssuePriority.LOW;
@@ -68,7 +68,7 @@ class IssueServiceTest {
 
     @Test
     @DisplayName("[TC-S02] Only sortBy and sortDir are valued -> Successfully calls Repository")
-    void whenOnlySortByAndSortDirAreValued_thenCallsRepositoryWithCorrectParameters() {
+    void whenOnlySortByAndSortDirAreValued_thenDelegatesCorrectly() {
         IssueType tipologia = null;
         IssueStatus stato = null;
         IssuePriority priorita = null;
